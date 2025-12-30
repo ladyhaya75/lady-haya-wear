@@ -4,6 +4,7 @@ import LightImageProtection from "@/components/ui/LightImageProtection";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { StoreProvider } from "@/stores/StoreProvider";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -58,6 +59,7 @@ export default function RootLayout({
 								}}
 							/>
 							<Analytics />
+							<SpeedInsights />
 						</StoreProvider>
 					</QueryProvider>
 				</CSRFProtection>

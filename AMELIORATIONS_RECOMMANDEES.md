@@ -305,7 +305,7 @@ module.exports = withPWA({
 
 ---
 
-### Phase 5 - PWA (optionnel, 2-3 jours)
+### Phase 5 - PWA (optionnel, 2-3 jours) reste a faire
 1. ✅ Configuration
 2. ✅ Manifest
 3. ✅ Service Worker
