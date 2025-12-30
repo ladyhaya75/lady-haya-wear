@@ -9,7 +9,7 @@ import { urlFor } from "@/lib/sanity";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
 	TbChevronUp,
 	TbCreditCard,
@@ -116,13 +116,14 @@ export function ProductPageClient({
 		) || [];
 
 	// Vérifier si une couleur a des tailles disponibles
-	const isColorAvailable = (color: any) => {
+	// useCallback pour éviter de recréer cette fonction à chaque render
+	const isColorAvailable = useCallback((color: any) => {
 		return color.sizes?.some(
 			(size: any) => size.available && size.quantity > 0
 		);
-	};
+	}, []);
 
-	const handleAddToCart = () => {
+	const handleAddToCart = useCallback(() => {
 		if (!selectedSize || !selectedColor) {
 			toast.error(
 				"Veuillez sélectionner une taille avant d'ajouter au panier",
@@ -183,15 +184,25 @@ export function ProductPageClient({
 				}
 			);
 		}, 500);
-	};
+	}, [
+		selectedSize,
+		selectedColor,
+		product,
+		quantity,
+		selectedSizeQuantity,
+		addToCart,
+	]);
 
-	const handleQuantityChange = (newQuantity: number) => {
-		if (newQuantity >= 1 && newQuantity <= selectedSizeQuantity) {
-			setQuantity(newQuantity);
-		}
-	};
+	const handleQuantityChange = useCallback(
+		(newQuantity: number) => {
+			if (newQuantity >= 1 && newQuantity <= selectedSizeQuantity) {
+				setQuantity(newQuantity);
+			}
+		},
+		[selectedSizeQuantity]
+	);
 
-	const handleToggleFavorite = () => {
+	const handleToggleFavorite = useCallback(() => {
 		const isCurrentlyInFavorites = favorites.some(
 			(fav: any) => fav.productId === product._id
 		);
@@ -226,12 +237,13 @@ export function ProductPageClient({
 				closeOnClick: true,
 				pauseOnHover: true,
 				draggable: true,
-			});
+				});
 		}
-	};
+	}, [favorites, product, selectedColor, toggleFavorite, user?.id]);
 
 	// Fonctions pour le scroll horizontal des produits similaires
-	const scrollSimilarProducts = (direction: "left" | "right") => {
+	const scrollSimilarProducts = useCallback(
+		(direction: "left" | "right") => {
 		if (similarProductsScrollRef) {
 			const scrollAmount = 280; // Largeur d'un produit + gap
 			const currentScroll = similarProductsScrollRef.scrollLeft;
@@ -245,19 +257,20 @@ export function ProductPageClient({
 				behavior: "smooth",
 			});
 		}
-	};
+	}, [similarProductsScrollRef]);
 
 	// Fonctions pour la modale d'images
-	const openImageModal = (index: number) => {
+	const openImageModal = useCallback((index: number) => {
 		setModalImageIndex(index);
 		setIsImageModalOpen(true);
-	};
+	}, []);
 
-	const closeImageModal = () => {
+	const closeImageModal = useCallback(() => {
 		setIsImageModalOpen(false);
-	};
+	}, []);
 
-	const navigateModalImage = (direction: "prev" | "next") => {
+	const navigateModalImage = useCallback(
+		(direction: "prev" | "next") => {
 		if (direction === "prev") {
 			setModalImageIndex((prev) =>
 				prev === 0 ? colorImages.length - 1 : prev - 1
@@ -267,18 +280,18 @@ export function ProductPageClient({
 				prev === colorImages.length - 1 ? 0 : prev + 1
 			);
 		}
-	};
+	}, [colorImages.length]);
 
 	// Gestion du swipe tactile
-	const handleTouchStart = (e: React.TouchEvent) => {
+	const handleTouchStart = useCallback((e: React.TouchEvent) => {
 		setTouchStart(e.targetTouches[0].clientX);
-	};
+	}, []);
 
-	const handleTouchMove = (e: React.TouchEvent) => {
+	const handleTouchMove = useCallback((e: React.TouchEvent) => {
 		setTouchEnd(e.targetTouches[0].clientX);
-	};
+	}, []);
 
-	const handleTouchEnd = () => {
+	const handleTouchEnd = useCallback(() => {
 		if (!touchStart || !touchEnd) return;
 
 		const distance = touchStart - touchEnd;
@@ -297,7 +310,7 @@ export function ProductPageClient({
 		// Reset
 		setTouchStart(0);
 		setTouchEnd(0);
-	};
+	}, [touchStart, touchEnd, navigateModalImage]);
 
 	// Calculer les miniatures visibles dans la modale (fenêtre glissante)
 	const visibleThumbnails = useMemo(() => {
