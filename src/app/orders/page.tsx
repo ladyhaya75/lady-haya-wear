@@ -2,64 +2,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import OrderCardSkeleton from "@/components/Skeletons/OrderCardSkeleton";
 import { useAuthStore } from "@/stores/authStore";
-import { useEffect, useState } from "react";
+import { useOrders, type Order } from "@/hooks/useOrders";
+import { useMemo, useState } from "react";
 
-// Types pour les données de commande
-interface OrderItem {
-	id: string;
-	productId: string;
-	productName: string;
-	colorName?: string;
-	sizeName?: string;
-	quantity: number;
-	unitPrice: number;
-	totalPrice: number;
-}
-
-interface Address {
-	id: string;
-	civility?: string;
-	firstName: string;
-	lastName: string;
-	company?: string;
-	street: string;
-	city: string;
-	zipCode: string;
-	country: string;
-	phone?: string;
-}
-
-interface Order {
-	id: string;
-	orderNumber: string;
-	status: string;
-	customerEmail: string;
-	customerName: string;
-	customerPhone?: string;
-	subtotal: number;
-	shippingCost: number;
-	taxAmount: number;
-	total: number;
-	promoDiscount: number;
-	paymentMethod?: string;
-	paymentStatus: string;
-	notes?: string;
-	createdAt: string;
-	confirmedAt?: string;
-	shippedAt?: string;
-	deliveredAt?: string;
-	trackingNumber?: string;
-	carrier?: string;
-	items: OrderItem[];
-	shippingAddress?: Address;
-	billingAddress?: Address;
-	promoCode?: {
-		id: string;
-		code: string;
-		type: string;
-		value: number;
-	};
-}
+// Types importés depuis useOrders hook
 
 // Ajoute une fonction utilitaire pour la couleur des badges
 function getBadgeClass(statut: string) {
@@ -270,14 +216,30 @@ function CommandeModal({
 }
 
 export default function OrdersPage() {
-	const user = useAuthStore((state) => state.user);
 	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 	const [modalCommande, setModalCommande] = useState<Order | null>(null);
 	const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
-	const [currentOrders, setCurrentOrders] = useState<Order[]>([]);
-	const [historicalOrders, setHistoricalOrders] = useState<Order[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	
+	// ✅ Utiliser React Query pour les commandes (cache automatique!)
+	const { data: orders = [], isLoading: loading, error: queryError } = useOrders();
+	
+	// Séparer les commandes actuelles et historiques (mémoizé pour éviter recalculs)
+	const { currentOrders, historicalOrders } = useMemo(() => {
+		const current: Order[] = [];
+		const historical: Order[] = [];
+		
+		orders.forEach((order) => {
+			if (["DELIVERED", "CANCELLED", "REFUNDED"].includes(order.status)) {
+				historical.push(order);
+			} else {
+				current.push(order);
+			}
+		});
+		
+		return { currentOrders: current, historicalOrders: historical };
+	}, [orders]);
+	
+	const error = queryError ? "Erreur lors du chargement des commandes" : null;
 
 	// Fonction pour basculer l'expansion d'une commande
 	const toggleOrderExpansion = (orderId: string) => {
@@ -291,42 +253,6 @@ export default function OrdersPage() {
 			return newSet;
 		});
 	};
-
-	// Charger les commandes
-	useEffect(() => {
-		const loadOrders = async () => {
-			if (!isAuthenticated) {
-				setLoading(false);
-				return;
-			}
-
-			try {
-				setLoading(true);
-				const response = await fetch("/api/user/orders", {
-					credentials: "include",
-				});
-
-				if (response.ok) {
-					const data = await response.json();
-					setCurrentOrders(data.currentOrders || []);
-					setHistoricalOrders(data.historicalOrders || []);
-					setError(null);
-				} else {
-					const errorData = await response.json();
-					setError(
-						errorData.error || "Erreur lors du chargement des commandes"
-					);
-				}
-			} catch (error) {
-				console.error("Erreur lors du chargement des commandes:", error);
-				setError("Erreur lors du chargement des commandes");
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		loadOrders();
-	}, [isAuthenticated]);
 
 	// Rediriger si non connecté
 	if (!isAuthenticated) {

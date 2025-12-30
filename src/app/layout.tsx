@@ -1,6 +1,7 @@
 import { CSRFProtection } from "@/components/Security/CSRFProtection";
 import StudioWrapper from "@/components/StudioWrapper";
 import LightImageProtection from "@/components/ui/LightImageProtection";
+import { QueryProvider } from "@/providers/QueryProvider";
 import { StoreProvider } from "@/stores/StoreProvider";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
@@ -33,30 +34,32 @@ export default function RootLayout({
 			<body className="antialiased">
 				<CSRFProtection>
 					<LightImageProtection />
-					<StoreProvider>
-						<StudioWrapper>{children}</StudioWrapper>
+					<QueryProvider>
+						<StoreProvider>
+							<StudioWrapper>{children}</StudioWrapper>
 
-						<ToastContainer
-							position="top-center"
-							autoClose={4000}
-							hideProgressBar={false}
-							newestOnTop={true}
-							closeOnClick
-							rtl={false}
-							pauseOnFocusLoss
-							draggable
-							pauseOnHover
-							theme="light"
-							limit={3}
-							style={{
-								zIndex: 99999,
-							}}
-							toastStyle={{
-								zIndex: 99999,
-							}}
-						/>
-						<Analytics />
-					</StoreProvider>
+							<ToastContainer
+								position="top-center"
+								autoClose={4000}
+								hideProgressBar={false}
+								newestOnTop={true}
+								closeOnClick
+								rtl={false}
+								pauseOnFocusLoss
+								draggable
+								pauseOnHover
+								theme="light"
+								limit={3}
+								style={{
+									zIndex: 99999,
+								}}
+								toastStyle={{
+									zIndex: 99999,
+								}}
+							/>
+							<Analytics />
+						</StoreProvider>
+					</QueryProvider>
 				</CSRFProtection>
 			</body>
 		</html>
