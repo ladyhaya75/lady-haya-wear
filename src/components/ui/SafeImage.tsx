@@ -12,6 +12,7 @@ interface SafeImageProps {
 	sizes?: string;
 	className?: string;
 	priority?: boolean;
+	loading?: "lazy" | "eager";
 	placeholder?: "blur" | "empty";
 	blurDataURL?: string;
 	fallback?: string;
@@ -27,6 +28,7 @@ export default function SafeImage({
 	sizes,
 	className = "",
 	priority = false,
+	loading = "lazy",
 	placeholder = "empty",
 	blurDataURL,
 	fallback = "/assets/placeholder.jpg",
@@ -103,6 +105,7 @@ export default function SafeImage({
 			sizes={sizes}
 			className={className}
 			priority={priority}
+			loading={priority ? undefined : loading}
 			placeholder={placeholder}
 			blurDataURL={blurDataURL}
 			onError={() => {
