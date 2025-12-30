@@ -30,16 +30,16 @@ export default function CartModal({ onClose }: CartModalProps) {
 	// useCallback pour les handlers afin d'éviter de recréer ces fonctions
 	const handleUpdateQuantity = useCallback(
 		(id: string, quantity: number) => {
-			updateQuantity(id, quantity);
+			updateQuantity(id, quantity, user?.id || null);
 		},
-		[updateQuantity]
+		[updateQuantity, user?.id]
 	);
 
 	const handleRemoveFromCart = useCallback(
 		(id: string) => {
-			removeFromCart(id);
+			removeFromCart(id, user?.id || null);
 		},
-		[removeFromCart]
+		[removeFromCart, user?.id]
 	);
 
 	const handleCheckout = useCallback(() => {

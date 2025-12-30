@@ -22,13 +22,19 @@ interface CartState {
   cartItems: CartItem[];
   isLoading: boolean;
   syncTimeout: NodeJS.Timeout | null;
+  optimisticUpdates: Set<string>; // Track optimistic updates in progress
   
   // Actions
-  addToCart: (newItem: Omit<CartItem, 'id'>) => void;
-  removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  addToCart: (newItem: Omit<CartItem, 'id'>, userId?: string | null) => Promise<void>;
+  removeFromCart: (id: string, userId?: string | null) => Promise<void>;
+  updateQuantity: (id: string, quantity: number, userId?: string | null) => Promise<void>;
   clearCart: () => void;
   setCartItems: (items: CartItem[]) => void;
+  
+  // Optimistic actions
+  addOptimisticUpdate: (itemId: string) => void;
+  removeOptimisticUpdate: (itemId: string) => void;
+  isOptimistic: (itemId: string) => boolean;
   
   // Computed
   getCartTotal: () => number;
@@ -68,76 +74,245 @@ export const useCartStore = create<CartState>()(
       cartItems: [],
       isLoading: false,
       syncTimeout: null,
+      optimisticUpdates: new Set<string>(),
 
-      addToCart: (newItem) => {
+      addOptimisticUpdate: (itemId) => {
         set((state) => {
-          const existingItemIndex = state.cartItems.findIndex(
-            (item) =>
-              item.productId === newItem.productId &&
-              item.color === newItem.color &&
-              item.size === newItem.size
-          );
-
-          let updatedItems: CartItem[];
-          if (existingItemIndex !== -1) {
-            updatedItems = [...state.cartItems];
-            const currentQuantity = updatedItems[existingItemIndex].quantity;
-            const newTotalQuantity = currentQuantity + newItem.quantity;
-            const maxAllowed = Math.min(newTotalQuantity, newItem.maxQuantity);
-            updatedItems[existingItemIndex].quantity = maxAllowed;
-          } else {
-            const id = `${newItem.productId}-${newItem.color}-${newItem.size}`;
-            updatedItems = [...state.cartItems, { ...newItem, id }];
-          }
-
-          return { cartItems: updatedItems };
+          const newUpdates = new Set(state.optimisticUpdates);
+          newUpdates.add(itemId);
+          return { optimisticUpdates: newUpdates };
         });
       },
 
-      removeFromCart: (id) => {
-        const itemToRemove = get().cartItems.find((item) => item.id === id);
-        
-        set((state) => ({
-          cartItems: state.cartItems.filter((item) => item.id !== id),
-        }));
+      removeOptimisticUpdate: (itemId) => {
+        set((state) => {
+          const newUpdates = new Set(state.optimisticUpdates);
+          newUpdates.delete(itemId);
+          return { optimisticUpdates: newUpdates };
+        });
+      },
 
-        if (itemToRemove) {
-          setTimeout(() => {
-            toast.info(
+      isOptimistic: (itemId) => {
+        return get().optimisticUpdates.has(itemId);
+      },
+
+      addToCart: async (newItem, userId = null) => {
+        // 1. OPTIMISTIC UPDATE - Mise à jour immédiate de l'UI
+        const previousCartItems = get().cartItems;
+        const itemId = `${newItem.productId}-${newItem.color}-${newItem.size}`;
+        
+        get().addOptimisticUpdate(itemId);
+
+        let updatedItems: CartItem[];
+        const existingItemIndex = previousCartItems.findIndex(
+          (item) =>
+            item.productId === newItem.productId &&
+            item.color === newItem.color &&
+            item.size === newItem.size
+        );
+
+        if (existingItemIndex !== -1) {
+          updatedItems = [...previousCartItems];
+          const currentQuantity = updatedItems[existingItemIndex].quantity;
+          const newTotalQuantity = currentQuantity + newItem.quantity;
+          const maxAllowed = Math.min(newTotalQuantity, newItem.maxQuantity);
+          updatedItems[existingItemIndex].quantity = maxAllowed;
+        } else {
+          updatedItems = [...previousCartItems, { ...newItem, id: itemId }];
+        }
+
+        set({ cartItems: updatedItems });
+
+        // 2. SYNC AVEC LE SERVEUR - En arrière-plan
+        if (userId) {
+          try {
+            const response = await fetch('/api/cart/sync', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ localCartItems: updatedItems }),
+            });
+
+            if (!response.ok) {
+              throw new Error('Échec de la synchronisation');
+            }
+
+            // Sync réussi, on retire l'état optimiste
+            get().removeOptimisticUpdate(itemId);
+          } catch (error) {
+            // 3. ROLLBACK - En cas d'échec, on annule le changement
+            console.error('Erreur lors de la synchronisation du panier:', error);
+            
+            set({ cartItems: previousCartItems });
+            get().removeOptimisticUpdate(itemId);
+            
+            toast.error(
               <div>
-                <div className="font-semibold">Produit supprimé du panier</div>
+                <div className="font-semibold">❌ Erreur</div>
                 <div className="text-sm opacity-90">
-                  {itemToRemove.name} - {itemToRemove.color} - Taille {itemToRemove.size}
+                  Impossible d'ajouter {newItem.name} au panier. Veuillez réessayer.
                 </div>
               </div>,
               {
                 position: 'top-right',
-                autoClose: 3000,
+                autoClose: 4000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
               }
             );
-          }, 0);
+          }
+        } else {
+          // Pas d'utilisateur connecté, on retire juste l'état optimiste
+          get().removeOptimisticUpdate(itemId);
         }
       },
 
-      updateQuantity: (id, quantity) => {
+      removeFromCart: async (id, userId = null) => {
+        const itemToRemove = get().cartItems.find((item) => item.id === id);
+        
+        if (!itemToRemove) return;
+
+        // 1. OPTIMISTIC UPDATE - Mise à jour immédiate de l'UI
+        const previousCartItems = get().cartItems;
+        get().addOptimisticUpdate(id);
+        
+        const updatedItems = previousCartItems.filter((item) => item.id !== id);
+        set({ cartItems: updatedItems });
+
+        // Toast de confirmation immédiat
+        toast.info(
+          <div>
+            <div className="font-semibold">🗑️ Produit supprimé du panier</div>
+            <div className="text-sm opacity-90">
+              {itemToRemove.name} - {itemToRemove.color} - Taille {itemToRemove.size}
+            </div>
+          </div>,
+          {
+            position: 'top-right',
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
+
+        // 2. SYNC AVEC LE SERVEUR - En arrière-plan
+        if (userId) {
+          try {
+            const response = await fetch('/api/cart/sync', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ localCartItems: updatedItems }),
+            });
+
+            if (!response.ok) {
+              throw new Error('Échec de la synchronisation');
+            }
+
+            // Sync réussi, on retire l'état optimiste
+            get().removeOptimisticUpdate(id);
+          } catch (error) {
+            // 3. ROLLBACK - En cas d'échec, on annule le changement
+            console.error('Erreur lors de la suppression du panier:', error);
+            
+            set({ cartItems: previousCartItems });
+            get().removeOptimisticUpdate(id);
+            
+            toast.error(
+              <div>
+                <div className="font-semibold">❌ Erreur</div>
+                <div className="text-sm opacity-90">
+                  Impossible de supprimer {itemToRemove.name}. Veuillez réessayer.
+                </div>
+              </div>,
+              {
+                position: 'top-right',
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+              }
+            );
+          }
+        } else {
+          // Pas d'utilisateur connecté, on retire juste l'état optimiste
+          get().removeOptimisticUpdate(id);
+        }
+      },
+
+      updateQuantity: async (id, quantity, userId = null) => {
         if (quantity <= 0) {
-          get().removeFromCart(id);
+          await get().removeFromCart(id, userId);
           return;
         }
 
-        set((state) => ({
-          cartItems: state.cartItems.map((item) => {
-            if (item.id === id) {
-              const maxAllowed = Math.min(quantity, item.maxQuantity);
-              return { ...item, quantity: maxAllowed };
+        // 1. OPTIMISTIC UPDATE - Mise à jour immédiate de l'UI
+        const previousCartItems = get().cartItems;
+        get().addOptimisticUpdate(id);
+
+        const updatedItems = previousCartItems.map((item) => {
+          if (item.id === id) {
+            const maxAllowed = Math.min(quantity, item.maxQuantity);
+            return { ...item, quantity: maxAllowed };
+          }
+          return item;
+        });
+
+        set({ cartItems: updatedItems });
+
+        // 2. SYNC AVEC LE SERVEUR - En arrière-plan
+        if (userId) {
+          try {
+            const response = await fetch('/api/cart/sync', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ localCartItems: updatedItems }),
+            });
+
+            if (!response.ok) {
+              throw new Error('Échec de la synchronisation');
             }
-            return item;
-          }),
-        }));
+
+            // Sync réussi, on retire l'état optimiste
+            get().removeOptimisticUpdate(id);
+          } catch (error) {
+            // 3. ROLLBACK - En cas d'échec, on annule le changement
+            console.error('Erreur lors de la mise à jour de la quantité:', error);
+            
+            set({ cartItems: previousCartItems });
+            get().removeOptimisticUpdate(id);
+            
+            const item = previousCartItems.find((i) => i.id === id);
+            toast.error(
+              <div>
+                <div className="font-semibold">❌ Erreur</div>
+                <div className="text-sm opacity-90">
+                  Impossible de mettre à jour la quantité{item ? ` de ${item.name}` : ''}. Veuillez réessayer.
+                </div>
+              </div>,
+              {
+                position: 'top-right',
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+              }
+            );
+          }
+        } else {
+          // Pas d'utilisateur connecté, on retire juste l'état optimiste
+          get().removeOptimisticUpdate(id);
+        }
       },
 
       clearCart: () => {

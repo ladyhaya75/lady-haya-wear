@@ -2,6 +2,8 @@ import { memo, useCallback } from 'react';
 import Image from 'next/image';
 import { FiTrash2 } from 'react-icons/fi';
 import type { CartItem as CartItemType } from '@/stores/cartStore';
+import { useCartStore } from '@/stores/cartStore';
+import { OptimisticIndicator, OptimisticCartButton } from '../OptimisticFeedback/OptimisticFeedback';
 
 interface CartItemProps {
   item: CartItemType;
@@ -19,6 +21,8 @@ const CartItem = memo(function CartItem({
   onRemove,
 }: CartItemProps) {
   
+  const isOptimistic = useCartStore((state) => state.isOptimistic(item.id));
+  
   const handleIncrement = useCallback(() => {
     onUpdateQuantity(item.id, item.quantity + 1);
   }, [item.id, item.quantity, onUpdateQuantity]);
@@ -32,7 +36,9 @@ const CartItem = memo(function CartItem({
   }, [item.id, onRemove]);
   
   return (
-    <div className="flex gap-4 p-3 bg-white rounded-xl shadow-sm cursor-default">
+    <div className="relative flex gap-4 p-3 bg-white rounded-xl shadow-sm cursor-default">
+      {/* Indicateur optimiste */}
+      <OptimisticIndicator itemId={item.id} type="cart" />
       <Image
         src={item.image}
         alt={item.imageAlt || item.name}
@@ -75,31 +81,34 @@ const CartItem = memo(function CartItem({
         {/* BOTTOM */}
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-center gap-2">
-            <button
+            <OptimisticCartButton
+              itemId={item.id}
               onClick={handleDecrement}
-              disabled={item.quantity <= 1}
+              disabled={item.quantity <= 1 || isOptimistic}
               className="w-6 h-6 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               −
-            </button>
+            </OptimisticCartButton>
             <span className="text-sm font-medium text-nude-dark min-w-[20px] text-center">
               {item.quantity}
             </span>
-            <button
+            <OptimisticCartButton
+              itemId={item.id}
               onClick={handleIncrement}
-              disabled={item.quantity >= item.maxQuantity}
+              disabled={item.quantity >= item.maxQuantity || isOptimistic}
               className="w-6 h-6 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               +
-            </button>
+            </OptimisticCartButton>
           </div>
-          <button
+          <OptimisticCartButton
+            itemId={item.id}
             onClick={handleRemove}
+            disabled={isOptimistic}
             className="p-1 text-red-400 hover:text-red-600 transition-colors cursor-pointer"
-            title="Supprimer"
           >
             <FiTrash2 className="w-3 h-3" />
-          </button>
+          </OptimisticCartButton>
         </div>
       </div>
     </div>
