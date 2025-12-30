@@ -1,10 +1,20 @@
 "use client";
 
 import NotificationBadge from "@/components/Dashboard/NotificationBadge";
-import SalesChart from "@/components/Dashboard/SalesChart";
 import StatsCard from "@/components/Dashboard/StatsCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { sanityClientNoCache } from "@/lib/sanity";
+import dynamic from "next/dynamic";
+
+// ✅ Lazy load du graphique (lourd)
+const SalesChart = dynamic(() => import("@/components/Dashboard/SalesChart"), {
+	ssr: false,
+	loading: () => (
+		<div className="h-80 bg-nude-light animate-pulse rounded-xl flex items-center justify-center">
+			<p className="text-nude-dark">Chargement du graphique...</p>
+		</div>
+	),
+});
 import {
 	AlertTriangle,
 	Edit3,

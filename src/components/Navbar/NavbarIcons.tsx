@@ -5,14 +5,21 @@ import { useAuthStore } from "@/stores/authStore";
 import { useCartStore } from "@/stores/cartStore";
 import { useFavoritesStore } from "@/stores/favoritesStore";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaHeart, FaUser } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
-import CartModal from "../CartModal/CartModal";
-import FavModal from "../FavModal/FavModal";
+
+// ✅ Lazy load des modals (chargés uniquement au clic)
+const CartModal = dynamic(() => import("../CartModal/CartModal"), {
+	ssr: false,
+});
+const FavModal = dynamic(() => import("../FavModal/FavModal"), {
+	ssr: false,
+});
 
 export default function NavbarIcons() {
 	const router = useRouter();
