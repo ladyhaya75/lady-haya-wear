@@ -2,8 +2,9 @@
 
 import ProductPrice from "@/components/ProductPrice/ProductPrice";
 import SafeImage from "@/components/ui/SafeImage";
-import { useCart } from "@/lib/CartContext";
-import { useFavorites } from "@/lib/FavoritesContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useCartStore } from "@/stores/cartStore";
+import { useFavoritesStore } from "@/stores/favoritesStore";
 import { urlFor } from "@/lib/sanity";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -49,8 +50,11 @@ export function ProductPageClient({
 	const [touchEnd, setTouchEnd] = useState(0);
 	const router = useRouter();
 
-	const { addToCart, cartItems } = useCart();
-	const { favorites, toggleFavorite } = useFavorites();
+	const addToCart = useCartStore((state) => state.addToCart);
+	const cartItems = useCartStore((state) => state.cartItems);
+	const favorites = useFavoritesStore((state) => state.favorites);
+	const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+	const user = useAuthStore((state) => state.user);
 
 	// Vérifier si le produit est dans les favoris
 	const isInFavorites = favorites.some(
@@ -202,7 +206,7 @@ export function ProductPageClient({
 			imageAlt: selectedColor?.mainImage?.alt || product.name,
 			slug: product.slug?.current || product._id,
 			category: product.category,
-		});
+		}, user?.id || null);
 
 		// Notification pour les favoris
 		if (isCurrentlyInFavorites) {

@@ -2,7 +2,8 @@
 
 import ProductBadges from "@/components/ProductBadges/ProductBadges";
 import ProductPrice from "@/components/ProductPrice/ProductPrice";
-import { useFavorites } from "@/lib/FavoritesContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useFavoritesStore } from "@/stores/favoritesStore";
 import { urlFor } from "@/lib/sanity";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -26,7 +27,9 @@ export default function ProductGrid({
 	showFilters = false,
 	categories = [],
 }: ProductGridProps) {
-	const { favorites, toggleFavorite } = useFavorites();
+	const favorites = useFavoritesStore((state) => state.favorites);
+	const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+	const user = useAuthStore((state) => state.user);
 	const [filteredProducts, setFilteredProducts] = useState(products);
 
 	// Mettre à jour les produits filtrés quand les produits changent
@@ -55,7 +58,7 @@ export default function ProductGrid({
 			category: product.category,
 		};
 
-		toggleFavorite(productForFavorites);
+		toggleFavorite(productForFavorites, user?.id || null);
 
 		// Notification pour les favoris
 		if (isCurrentlyInFavorites) {

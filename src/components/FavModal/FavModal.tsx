@@ -1,6 +1,7 @@
 "use client";
 
-import { useFavorites } from "@/lib/FavoritesContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useFavoritesStore } from "@/stores/favoritesStore";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { FaTrash } from "react-icons/fa";
@@ -12,7 +13,10 @@ interface FavModalProps {
 }
 
 export default function FavModal({ isOpen, onClose }: FavModalProps) {
-	const { favorites, removeFromFavorites, clearAllFavorites } = useFavorites();
+	const favorites = useFavoritesStore((state) => state.favorites);
+	const removeFromFavorites = useFavoritesStore((state) => state.removeFromFavorites);
+	const clearAllFavorites = useFavoritesStore((state) => state.clearAllFavorites);
+	const user = useAuthStore((state) => state.user);
 
 	const handleBackdropClick = (e: React.MouseEvent) => {
 		if (e.target === e.currentTarget) {
@@ -21,15 +25,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 	};
 
 	const handleRemoveFavorite = (favorite: any) => {
-		removeFromFavorites(favorite.productId);
-		toast.info(`${favorite.name} retiré des favoris`, {
-			position: "top-right",
-			autoClose: 3000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-		});
+		removeFromFavorites(favorite.productId, user?.id || null);
 	};
 
 	const handleClearAllFavorites = () => {

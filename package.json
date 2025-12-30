@@ -56,7 +56,8 @@
     "styled-components": "^6.1.19",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^4.0.4"
+    "zod": "^4.0.4",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

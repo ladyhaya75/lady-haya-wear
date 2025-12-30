@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/lib/AuthContext";
+import { useAuthStore } from "@/stores/authStore";
 import {
 	getFieldValidation,
 	validateEmail,
@@ -34,7 +34,7 @@ export default function Login() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const callbackUrl = searchParams.get("callbackUrl") || "/";
-	const { login } = useAuth();
+	const login = useAuthStore((state) => state.login);
 
 	// Données du formulaire de connexion
 	const [loginData, setLoginData] = useState({

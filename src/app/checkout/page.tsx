@@ -1,7 +1,7 @@
 "use client";
 
 import Loader from "@/components/Loader";
-import { useCart } from "@/lib/CartContext";
+import { useCartStore } from "@/stores/cartStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,7 +16,9 @@ const fakeUser = {
 };
 
 export default function CheckoutPage() {
-	const { cartItems, getCartTotal, clearCart } = useCart();
+	const cartItems = useCartStore((state) => state.cartItems);
+	const getCartTotal = useCartStore((state) => state.getCartTotal);
+	const clearCart = useCartStore((state) => state.clearCart);
 	const [showAddressMenu, setShowAddressMenu] = useState(false);
 	const [selectedDelivery, setSelectedDelivery] = useState("domicile");
 	const [selectedPayment, setSelectedPayment] = useState("");

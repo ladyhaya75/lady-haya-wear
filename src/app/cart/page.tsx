@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "@/lib/AuthContext";
-import { useCart } from "@/lib/CartContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useCartStore } from "@/stores/cartStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,9 +9,12 @@ import { FiArrowLeft, FiTrash2 } from "react-icons/fi";
 import { toast } from "react-toastify";
 
 export default function CartPage() {
-	const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } =
-		useCart();
-	const { user } = useAuth();
+	const cartItems = useCartStore((state) => state.cartItems);
+	const removeFromCart = useCartStore((state) => state.removeFromCart);
+	const updateQuantity = useCartStore((state) => state.updateQuantity);
+	const getCartTotal = useCartStore((state) => state.getCartTotal);
+	const clearCart = useCartStore((state) => state.clearCart);
+	const user = useAuthStore((state) => state.user);
 	const router = useRouter();
 
 	// Fonction pour vérifier le stock disponible d'un item

@@ -1,9 +1,9 @@
 "use client";
 
 import { useScrollLock } from "@/hooks/useScrollLock";
-import { useAuth } from "@/lib/AuthContext";
-import { useCart } from "@/lib/CartContext";
-import { useFavorites } from "@/lib/FavoritesContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useCartStore } from "@/stores/cartStore";
+import { useFavoritesStore } from "@/stores/favoritesStore";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,9 +16,9 @@ import FavModal from "../FavModal/FavModal";
 
 export default function NavbarIcons() {
 	const router = useRouter();
-	const { favorites } = useFavorites();
-	const { getCartCount } = useCart();
-	const { user, loading, logout } = useAuth();
+	const favorites = useFavoritesStore((state) => state.favorites);
+	const getCartCount = useCartStore((state) => state.getCartCount);
+	const { user, loading, logout } = useAuthStore();
 	const profileModalRef = useRef<HTMLDivElement>(null);
 
 	const [isProfileOpen, setIsProfileOpen] = useState(false);

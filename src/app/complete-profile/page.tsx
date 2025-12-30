@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/lib/AuthContext";
+import { useAuthStore } from "@/stores/authStore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -18,7 +18,7 @@ function CompleteProfileContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const provider = searchParams.get("provider");
-	const { checkAuth } = useAuth();
+	const checkAuth = useAuthStore((state) => state.checkAuth);
 
 	useEffect(() => {
 		// Récupérer les données temporaires du cookie

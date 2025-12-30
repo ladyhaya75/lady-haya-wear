@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/lib/AuthContext";
+import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 
 // Types pour les données de commande
@@ -269,7 +269,8 @@ function CommandeModal({
 }
 
 export default function OrdersPage() {
-	const { user, isAuthenticated } = useAuth();
+	const user = useAuthStore((state) => state.user);
+	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 	const [modalCommande, setModalCommande] = useState<Order | null>(null);
 	const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
 	const [currentOrders, setCurrentOrders] = useState<Order[]>([]);

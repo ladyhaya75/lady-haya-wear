@@ -1,7 +1,8 @@
 "use client";
 import ProductBadges from "@/components/ProductBadges/ProductBadges";
 import ProductPrice from "@/components/ProductPrice/ProductPrice";
-import { useFavorites } from "@/lib/FavoritesContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useFavoritesStore } from "@/stores/favoritesStore";
 import { urlFor } from "@/lib/sanity";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -15,7 +16,9 @@ interface ProductListProps {
 }
 
 export default function ProductList({ featuredProducts }: ProductListProps) {
-	const { favorites, toggleFavorite } = useFavorites();
+	const favorites = useFavoritesStore((state) => state.favorites);
+	const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+	const user = useAuthStore((state) => state.user);
 
 	const handleToggleFavorite = (product: any, e: React.MouseEvent) => {
 		e.preventDefault(); // Empêcher la navigation du Link
@@ -38,7 +41,7 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 			category: product.category,
 		};
 
-		toggleFavorite(productForFavorites);
+		toggleFavorite(productForFavorites, user?.id || null);
 
 		// Notification pour les favoris
 		if (isCurrentlyInFavorites) {

@@ -1,9 +1,7 @@
 import { CSRFProtection } from "@/components/Security/CSRFProtection";
 import StudioWrapper from "@/components/StudioWrapper";
 import LightImageProtection from "@/components/ui/LightImageProtection";
-import { AuthProvider } from "@/lib/AuthContext";
-import { CartProvider } from "@/lib/CartContext";
-import { FavoritesProvider } from "@/lib/FavoritesContext";
+import { StoreProvider } from "@/stores/StoreProvider";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
@@ -35,34 +33,30 @@ export default function RootLayout({
 			<body className="antialiased">
 				<CSRFProtection>
 					<LightImageProtection />
-					<AuthProvider>
-						<CartProvider>
-							<FavoritesProvider>
-								<StudioWrapper>{children}</StudioWrapper>
+					<StoreProvider>
+						<StudioWrapper>{children}</StudioWrapper>
 
-								<ToastContainer
-									position="top-center"
-									autoClose={4000}
-									hideProgressBar={false}
-									newestOnTop={true}
-									closeOnClick
-									rtl={false}
-									pauseOnFocusLoss
-									draggable
-									pauseOnHover
-									theme="light"
-									limit={3}
-									style={{
-										zIndex: 99999,
-									}}
-									toastStyle={{
-										zIndex: 99999,
-									}}
-								/>
-								<Analytics />
-							</FavoritesProvider>
-						</CartProvider>
-					</AuthProvider>
+						<ToastContainer
+							position="top-center"
+							autoClose={4000}
+							hideProgressBar={false}
+							newestOnTop={true}
+							closeOnClick
+							rtl={false}
+							pauseOnFocusLoss
+							draggable
+							pauseOnHover
+							theme="light"
+							limit={3}
+							style={{
+								zIndex: 99999,
+							}}
+							toastStyle={{
+								zIndex: 99999,
+							}}
+						/>
+						<Analytics />
+					</StoreProvider>
 				</CSRFProtection>
 			</body>
 		</html>

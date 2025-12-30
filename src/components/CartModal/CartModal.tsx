@@ -1,6 +1,6 @@
 "use client";
-import { useAuth } from "@/lib/AuthContext";
-import { useCart } from "@/lib/CartContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useCartStore } from "@/stores/cartStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,8 +13,11 @@ interface CartModalProps {
 }
 
 export default function CartModal({ onClose }: CartModalProps) {
-	const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
-	const { user } = useAuth();
+	const cartItems = useCartStore((state) => state.cartItems);
+	const removeFromCart = useCartStore((state) => state.removeFromCart);
+	const updateQuantity = useCartStore((state) => state.updateQuantity);
+	const getCartTotal = useCartStore((state) => state.getCartTotal);
+	const user = useAuthStore((state) => state.user);
 	const router = useRouter();
 
 	// Fonction pour vérifier le stock disponible d'un item
