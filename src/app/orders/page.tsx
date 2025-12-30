@@ -1,5 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
+import OrderCardSkeleton from "@/components/Skeletons/OrderCardSkeleton";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 
@@ -355,8 +356,10 @@ export default function OrdersPage() {
 				</h1>
 
 				{loading ? (
-					<div className="text-center py-8">
-						<div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-rose-dark-2"></div>
+					<div className="space-y-4">
+						{[1, 2, 3].map((i) => (
+							<OrderCardSkeleton key={i} />
+						))}
 						<p className="mt-2 text-nude-dark-2">Chargement des commandes...</p>
 					</div>
 				) : error ? (

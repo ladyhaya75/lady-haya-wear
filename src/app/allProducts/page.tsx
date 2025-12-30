@@ -1,6 +1,7 @@
 "use client";
 
 import ProductGrid from "@/components/ProductGrid/ProductGrid";
+import ProductGridSkeleton from "@/components/Skeletons/ProductGridSkeleton";
 import { getAllCategories, getAllUnifiedProducts } from "@/lib/sanity-queries";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -34,11 +35,18 @@ export default function AllProducts() {
 
 	if (isLoading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-beige-light">
-				<div className="text-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-logo mx-auto mb-4"></div>
-					<p className="text-nude-dark">Chargement des produits...</p>
-				</div>
+			<div className="min-h-screen bg-beige-light">
+				{/* Header skeleton */}
+				<section className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-16">
+					<div className="text-center animate-pulse">
+						<div className="h-16 bg-nude-light rounded w-96 mx-auto mt-12 mb-4" />
+						<div className="h-6 bg-nude-light rounded w-2/3 mx-auto mb-6" />
+						<div className="h-10 bg-rose-light-2 rounded-full w-48 mx-auto" />
+					</div>
+				</section>
+				
+				{/* Products skeleton */}
+				<ProductGridSkeleton count={12} />
 			</div>
 		);
 	}
