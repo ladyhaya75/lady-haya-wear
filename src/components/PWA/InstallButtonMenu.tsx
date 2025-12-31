@@ -113,10 +113,10 @@ export default function InstallButtonMenu() {
 	return (
 		<button
 			onClick={handleInstallClick}
-			className="flex items-center gap-2 rounded-full bg-logo px-6 py-3 text-sm font-medium text-white hover:bg-nude-dark-2 transition-all shadow-md hover:shadow-lg active:scale-95"
+			className="flex items-center gap-2 rounded-full bg-nude-medium px-6 py-3 border border-logo text-sm font-medium text-logo hover:bg-nude-dark-2 transition-all shadow-md hover:shadow-lg active:scale-95 cursor-pointer"
 			title="Installer l'application"
 		>
-			<Download className="h-5 w-5" />
+			<Download className="h-5 w-5 text-logo" />
 			<span>Installer l'app</span>
 		</button>
 	);

@@ -82,19 +82,19 @@ export default function NavbarIcons() {
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.3 }}
 		>
-		{/* Bouton Installation PWA - Masqué sur mobile, visible sur desktop */}
-		<motion.div
-			className="hidden xl:flex"
-			initial={{ scale: 0, opacity: 0, y: -20 }}
-			animate={{ scale: 1, opacity: 1, y: 0 }}
-			transition={{
-				duration: 0.6,
-				delay: 0.1,
-				ease: [0.68, -0.55, 0.265, 1.55],
-			}}
-		>
-			<InstallButton />
-		</motion.div>
+			{/* Bouton Installation PWA - Masqué sur mobile, visible sur desktop */}
+			<motion.div
+				className="hidden xl:flex"
+				initial={{ scale: 0, opacity: 0, y: -20 }}
+				animate={{ scale: 1, opacity: 1, y: 0 }}
+				transition={{
+					duration: 0.6,
+					delay: 0.1,
+					ease: [0.68, -0.55, 0.265, 1.55],
+				}}
+			>
+				<InstallButton />
+			</motion.div>
 
 			<motion.div
 				initial={{ scale: 0, opacity: 0, y: -20 }}
