@@ -60,7 +60,7 @@ export default function Menu() {
 						transition={{ duration: 0.3 }}
 					>
 						<motion.div
-							className="absolute left-0 top-0 h-full w-[90%] md:w-3/4 bg-nude-medium"
+							className="absolute left-0 top-0 h-full w-[90%] md:w-3/4 bg-nude-medium overflow-y-auto"
 							onClick={(e) => e.stopPropagation()}
 							initial={{ x: "-100%" }}
 							animate={{ x: 0 }}
@@ -69,7 +69,7 @@ export default function Menu() {
 						>
 							{/* Contenu du menu */}
 							<motion.div
-								className="flex flex-col items-center justify-center pt-12 px-8 gap-4 text-xl"
+								className="flex flex-col items-center justify-center pt-12 px-8 gap-4 text-xl pb-8"
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								transition={{ duration: 0.3, delay: 0.1 }}
