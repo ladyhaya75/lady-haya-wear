@@ -2,6 +2,7 @@
 	"name": "Lady Haya Wear - Mode Femme Musulmane Élégante",
 	"short_name": "Lady Haya",
 	"description": "Boutique en ligne de vêtements féminins élégants et modernes pour femmes musulmanes. Découvrez nos collections exclusives.",
+	"version": "1.0.0",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
