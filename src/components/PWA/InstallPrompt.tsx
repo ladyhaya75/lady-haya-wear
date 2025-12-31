@@ -27,12 +27,23 @@ export default function InstallPrompt() {
 			(window.navigator as any).standalone === true;
 		setIsStandalone(isInStandaloneMode);
 
-		// Vérifier si l'utilisateur a déjà refusé
-		const hasDeclined = localStorage.getItem("pwa-install-declined");
+		// Vérifier si l'utilisateur a déjà installé
 		const hasInstalled = localStorage.getItem("pwa-installed");
-
-		if (hasDeclined || hasInstalled || isInStandaloneMode) {
+		if (hasInstalled || isInStandaloneMode) {
 			return;
+		}
+
+		// Vérifier si l'utilisateur a refusé récemment (moins de 7 jours)
+		const declinedDate = localStorage.getItem("pwa-install-declined");
+		if (declinedDate) {
+			const daysSinceDecline =
+				(new Date().getTime() - parseInt(declinedDate)) /
+				(1000 * 60 * 60 * 24);
+
+			// Si moins de 7 jours, ne pas afficher
+			if (daysSinceDecline < 7) {
+				return;
+			}
 		}
 
 		// Écouter l'événement beforeinstallprompt (Android/Desktop)
