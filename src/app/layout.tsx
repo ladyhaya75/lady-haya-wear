@@ -1,4 +1,5 @@
 import { CSRFProtection } from "@/components/Security/CSRFProtection";
+import InstallPrompt from "@/components/PWA/InstallPrompt";
 import StudioWrapper from "@/components/StudioWrapper";
 import LightImageProtection from "@/components/ui/LightImageProtection";
 import { QueryProvider } from "@/providers/QueryProvider";
@@ -78,6 +79,10 @@ export default function RootLayout({
 									zIndex: 99999,
 								}}
 							/>
+							
+							{/* PWA Install Prompt */}
+							<InstallPrompt />
+							
 							<Analytics />
 							<SpeedInsights />
 						</StoreProvider>
