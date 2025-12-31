@@ -164,9 +164,9 @@ export default function InstallPrompt() {
 						{/* Install Button */}
 						<button
 							onClick={handleInstallClick}
-							className="w-full rounded-xl bg-logo py-3 px-4 font-semibold text-beige-light hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+							className="w-full rounded-xl bg-logo py-3 px-4 font-semibold text-beige-light hover:scale-103 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl cursor-pointer"
 						>
-							<Download className="h-5 w-5" />
+							<Download className="h-5 w-5 text-beige-light" />
 							Installer l'application
 						</button>
 
