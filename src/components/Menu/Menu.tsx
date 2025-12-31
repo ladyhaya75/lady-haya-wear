@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaInstagram } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
-import InstallButton from "../PWA/InstallButton";
+import InstallButtonMenu from "../PWA/InstallButtonMenu";
 
 export default function Menu() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -252,7 +252,7 @@ export default function Menu() {
 											ease: [0.68, -0.55, 0.265, 1.55],
 										}}
 									>
-										<InstallButton />
+										<InstallButtonMenu />
 									</motion.div>
 								</motion.div>
 							</motion.div>
