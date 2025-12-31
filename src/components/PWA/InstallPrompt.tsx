@@ -102,11 +102,11 @@ export default function InstallPrompt() {
 			{/* Android/Desktop Prompt */}
 			{!isIOS && deferredPrompt && (
 				<div className="fixed bottom-6 left-4 right-4 z-50 mx-auto max-w-md animate-slide-up">
-					<div className="relative rounded-2xl bg-white p-6 shadow-2xl border border-gray-200">
+					<div className="relative rounded-2xl bg-nude-light p-6 shadow-2xl border border-rose-medium">
 						{/* Close Button */}
 						<button
 							onClick={handleDismiss}
-							className="absolute right-3 top-3 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+							className="absolute right-3 top-3 rounded-full p-1 text-nude-dark hover:bg-rose-light hover:text-logo transition-colors"
 							aria-label="Fermer"
 						>
 							<X className="h-5 w-5" />
@@ -114,31 +114,31 @@ export default function InstallPrompt() {
 
 						{/* Icon */}
 						<div className="mb-4 flex items-center gap-4">
-							<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+							<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-logo">
 								<Smartphone className="h-7 w-7 text-white" />
 							</div>
 							<div className="flex-1">
-								<h3 className="text-lg font-bold text-gray-900">
+								<h3 className="text-lg font-bold text-logo font-balqis">
 									Installer Lady Haya
 								</h3>
-								<p className="text-sm text-gray-600">
+								<p className="text-sm text-nude-dark">
 									Accès rapide depuis votre écran d'accueil
 								</p>
 							</div>
 						</div>
 
 						{/* Benefits */}
-						<ul className="mb-5 space-y-2 text-sm text-gray-700">
+						<ul className="mb-5 space-y-2 text-sm text-nude-dark">
 							<li className="flex items-center gap-2">
-								<span className="text-green-500">✓</span>
+								<span className="text-rose-dark-2">✓</span>
 								<span>Ouverture instantanée</span>
 							</li>
 							<li className="flex items-center gap-2">
-								<span className="text-green-500">✓</span>
+								<span className="text-rose-dark-2">✓</span>
 								<span>Fonctionne hors ligne</span>
 							</li>
 							<li className="flex items-center gap-2">
-								<span className="text-green-500">✓</span>
+								<span className="text-rose-dark-2">✓</span>
 								<span>Notifications des nouveautés</span>
 							</li>
 						</ul>
@@ -146,7 +146,7 @@ export default function InstallPrompt() {
 						{/* Install Button */}
 						<button
 							onClick={handleInstallClick}
-							className="w-full rounded-xl bg-black py-3 px-4 font-semibold text-white hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+							className="w-full rounded-xl bg-logo py-3 px-4 font-semibold text-white hover:bg-nude-dark transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
 						>
 							<Download className="h-5 w-5" />
 							Installer l'application
@@ -154,7 +154,7 @@ export default function InstallPrompt() {
 
 						<button
 							onClick={handleDismiss}
-							className="mt-2 w-full py-2 text-sm text-gray-500 hover:text-gray-700"
+							className="mt-2 w-full py-2 text-sm text-nude-dark hover:text-logo transition-colors"
 						>
 							Peut-être plus tard
 						</button>
@@ -165,11 +165,11 @@ export default function InstallPrompt() {
 			{/* iOS Instructions Prompt */}
 			{isIOS && (
 				<div className="fixed bottom-6 left-4 right-4 z-50 mx-auto max-w-md animate-slide-up">
-					<div className="relative rounded-2xl bg-white p-6 shadow-2xl border border-gray-200">
+					<div className="relative rounded-2xl bg-nude-light p-6 shadow-2xl border border-rose-medium">
 						{/* Close Button */}
 						<button
 							onClick={handleDismiss}
-							className="absolute right-3 top-3 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+							className="absolute right-3 top-3 rounded-full p-1 text-nude-dark hover:bg-rose-light hover:text-logo transition-colors"
 							aria-label="Fermer"
 						>
 							<X className="h-5 w-5" />
@@ -177,14 +177,14 @@ export default function InstallPrompt() {
 
 						{/* Icon */}
 						<div className="mb-4 flex items-center gap-4">
-							<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+							<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-logo">
 								<Smartphone className="h-7 w-7 text-white" />
 							</div>
 							<div className="flex-1">
-								<h3 className="text-lg font-bold text-gray-900">
+								<h3 className="text-lg font-bold text-logo font-balqis">
 									Installer Lady Haya
 								</h3>
-								<p className="text-sm text-gray-600">
+								<p className="text-sm text-nude-dark">
 									Ajoutez l'app à votre écran d'accueil
 								</p>
 							</div>
@@ -192,49 +192,49 @@ export default function InstallPrompt() {
 
 						{/* iOS Instructions */}
 						<div className="mb-5 space-y-3">
-							<div className="rounded-xl bg-blue-50 p-4">
-								<p className="mb-3 text-sm font-semibold text-gray-900">
+							<div className="rounded-xl bg-rose-light p-4 border border-rose-medium">
+								<p className="mb-3 text-sm font-semibold text-logo font-balqis">
 									📱 Instructions iOS :
 								</p>
-								<ol className="space-y-2 text-sm text-gray-700">
+								<ol className="space-y-2 text-sm text-nude-dark">
 									<li className="flex items-start gap-2">
-										<span className="font-bold text-blue-600">1.</span>
+										<span className="font-bold text-logo">1.</span>
 										<span>
 											Tapez sur le bouton{" "}
-											<span className="inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800">
+											<span className="inline-flex items-center rounded bg-rose-dark px-2 py-0.5 text-xs font-semibold text-logo">
 												Partager 📤
 											</span>{" "}
 											en bas
 										</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<span className="font-bold text-blue-600">2.</span>
+										<span className="font-bold text-logo">2.</span>
 										<span>
 											Sélectionnez{" "}
-											<span className="font-semibold">
+											<span className="font-semibold text-logo">
 												"Sur l'écran d'accueil"
 											</span>
 										</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<span className="font-bold text-blue-600">3.</span>
+										<span className="font-bold text-logo">3.</span>
 										<span>Confirmez en tapant "Ajouter"</span>
 									</li>
 								</ol>
 							</div>
 
 							{/* Benefits */}
-							<ul className="space-y-2 text-sm text-gray-700">
+							<ul className="space-y-2 text-sm text-nude-dark">
 								<li className="flex items-center gap-2">
-									<span className="text-green-500">✓</span>
+									<span className="text-rose-dark-2">✓</span>
 									<span>Accès direct depuis l'écran d'accueil</span>
 								</li>
 								<li className="flex items-center gap-2">
-									<span className="text-green-500">✓</span>
+									<span className="text-rose-dark-2">✓</span>
 									<span>Chargement ultra-rapide</span>
 								</li>
 								<li className="flex items-center gap-2">
-									<span className="text-green-500">✓</span>
+									<span className="text-rose-dark-2">✓</span>
 									<span>Expérience app native</span>
 								</li>
 							</ul>
@@ -242,7 +242,7 @@ export default function InstallPrompt() {
 
 						<button
 							onClick={handleDismiss}
-							className="w-full rounded-xl bg-gray-100 py-3 px-4 font-semibold text-gray-700 hover:bg-gray-200 transition-all"
+							className="w-full rounded-xl bg-rose-light py-3 px-4 font-semibold text-logo hover:bg-rose-dark transition-all border border-rose-medium"
 						>
 							J'ai compris
 						</button>
