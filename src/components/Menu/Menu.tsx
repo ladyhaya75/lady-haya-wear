@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaInstagram } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
+import InstallButton from "../PWA/InstallButton";
 
 export default function Menu() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -212,6 +213,46 @@ export default function Menu() {
 										>
 											<FaTiktok className="text-xl text-white" />
 										</motion.a>
+									</motion.div>
+								</motion.div>
+
+								{/* Trait de séparation */}
+								<motion.div
+									className="w-32 h-[1px] bg-nude-dark my-4"
+									initial={{ scaleX: 0 }}
+									animate={{ scaleX: 1 }}
+									transition={{ duration: 0.5, delay: 1.4 }}
+								></motion.div>
+
+								{/* Section PWA - Télécharger l'app */}
+								<motion.div
+									className="flex flex-col items-center gap-4"
+									initial={{ y: 50, opacity: 0 }}
+									animate={{ y: 0, opacity: 1 }}
+									transition={{
+										duration: 0.6,
+										delay: 1.5,
+										ease: "easeOut",
+									}}
+								>
+									<motion.h3
+										className="text-logo font-balqis font-semibold text-lg"
+										initial={{ y: 20, opacity: 0 }}
+										animate={{ y: 0, opacity: 1 }}
+										transition={{ duration: 0.4, delay: 1.6 }}
+									>
+										Télécharger l'app
+									</motion.h3>
+									<motion.div
+										initial={{ scale: 0, opacity: 0 }}
+										animate={{ scale: 1, opacity: 1 }}
+										transition={{
+											duration: 0.6,
+											delay: 1.7,
+											ease: [0.68, -0.55, 0.265, 1.55],
+										}}
+									>
+										<InstallButton />
 									</motion.div>
 								</motion.div>
 							</motion.div>

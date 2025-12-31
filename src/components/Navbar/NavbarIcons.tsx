@@ -20,9 +20,6 @@ const CartModal = dynamic(() => import("../CartModal/CartModal"), {
 const FavModal = dynamic(() => import("../FavModal/FavModal"), {
 	ssr: false,
 });
-const InstallButton = dynamic(() => import("../PWA/InstallButton"), {
-	ssr: false,
-});
 
 export default function NavbarIcons() {
 	const router = useRouter();
@@ -82,25 +79,12 @@ export default function NavbarIcons() {
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.3 }}
 		>
-			{/* Bouton Installation PWA */}
 			<motion.div
 				initial={{ scale: 0, opacity: 0, y: -20 }}
 				animate={{ scale: 1, opacity: 1, y: 0 }}
 				transition={{
 					duration: 0.6,
 					delay: 0.1,
-					ease: [0.68, -0.55, 0.265, 1.55],
-				}}
-			>
-				<InstallButton />
-			</motion.div>
-
-			<motion.div
-				initial={{ scale: 0, opacity: 0, y: -20 }}
-				animate={{ scale: 1, opacity: 1, y: 0 }}
-				transition={{
-					duration: 0.6,
-					delay: 0.2,
 					ease: [0.68, -0.55, 0.265, 1.55],
 				}}
 				whileTap={{ scale: 0.9 }}
@@ -165,7 +149,7 @@ export default function NavbarIcons() {
 				animate={{ scale: 1, opacity: 1, y: 0 }}
 				transition={{
 					duration: 0.6,
-					delay: 0.4,
+					delay: 0.2,
 					ease: [0.68, -0.55, 0.265, 1.55],
 				}}
 				whileTap={{ scale: 0.9 }}
@@ -192,7 +176,7 @@ export default function NavbarIcons() {
 				animate={{ scale: 1, opacity: 1, y: 0 }}
 				transition={{
 					duration: 0.6,
-					delay: 0.6,
+					delay: 0.3,
 					ease: [0.68, -0.55, 0.265, 1.55],
 				}}
 				whileTap={{ scale: 0.9 }}
