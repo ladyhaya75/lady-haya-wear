@@ -57,6 +57,8 @@ export default function InstallButtonMenu() {
 
 	const handleInstallClick = async () => {
 		if (!deferredPrompt && !isIOS) {
+			// Si pas de prompt disponible, afficher un message
+			alert("Veuillez patienter quelques secondes, puis réessayez 😊");
 			return;
 		}
 
@@ -79,12 +81,12 @@ export default function InstallButtonMenu() {
 	}
 
 	// Pour iOS, afficher un message d'instruction
-	if (isIOS && !deferredPrompt) {
+	if (isIOS) {
 		return (
-			<div className="flex flex-col items-center gap-2 px-4">
-				<div className="flex items-center gap-2 text-logo">
-					<Smartphone className="h-5 w-5" />
-					<p className="text-sm text-center">
+			<div className="flex flex-col items-center gap-2 px-4 max-w-xs">
+				<div className="flex flex-col items-center gap-2 text-logo text-center">
+					<Smartphone className="h-6 w-6 text-logo" />
+					<p className="text-sm">
 						Appuyez sur <span className="font-bold">Partager 📤</span> puis{" "}
 						<span className="font-bold">"Sur l'écran d'accueil"</span>
 					</p>
@@ -93,17 +95,7 @@ export default function InstallButtonMenu() {
 		);
 	}
 
-	// Si pas de prompt disponible (pas encore déclenché ou navigateur incompatible)
-	if (!deferredPrompt && !isIOS) {
-		return (
-			<div className="flex items-center gap-2 text-nude-dark text-sm">
-				<Smartphone className="h-4 w-4" />
-				<span>Installation disponible prochainement</span>
-			</div>
-		);
-	}
-
-	// Bouton d'installation (Android/Desktop)
+	// Bouton d'installation (Android/Desktop) - toujours affiché
 	return (
 		<button
 			onClick={handleInstallClick}
