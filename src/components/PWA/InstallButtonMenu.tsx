@@ -13,6 +13,7 @@ export default function InstallButtonMenu() {
 		useState<BeforeInstallPromptEvent | null>(null);
 	const [isStandalone, setIsStandalone] = useState(false);
 	const [isIOS, setIsIOS] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		// Vérifier si déjà installé
@@ -33,6 +34,9 @@ export default function InstallButtonMenu() {
 			localStorage.removeItem("pwa-installed");
 			localStorage.removeItem("pwa-install-declined");
 		}
+
+		// Marquer le chargement comme terminé
+		setIsLoading(false);
 
 		// Ne rien faire si déjà installé
 		if (standalone) {
@@ -75,6 +79,16 @@ export default function InstallButtonMenu() {
 		}
 	};
 
+	// Afficher un loader pendant le chargement
+	if (isLoading) {
+		return (
+			<div className="flex items-center gap-2 text-nude-dark text-sm">
+				<div className="animate-spin">⏳</div>
+				<span>Chargement...</span>
+			</div>
+		);
+	}
+
 	// Ne rien afficher si déjà installé
 	if (isStandalone) {
 		return null;
@@ -99,7 +113,7 @@ export default function InstallButtonMenu() {
 	return (
 		<button
 			onClick={handleInstallClick}
-			className="flex items-center gap-2 rounded-full bg-logo px-6 py-3 text-sm font-medium text-white hover:bg-nude-dark-2 transition-all shadow-md hover:shadow-lg"
+			className="flex items-center gap-2 rounded-full bg-logo px-6 py-3 text-sm font-medium text-white hover:bg-nude-dark-2 transition-all shadow-md hover:shadow-lg active:scale-95"
 			title="Installer l'application"
 		>
 			<Download className="h-5 w-5" />
