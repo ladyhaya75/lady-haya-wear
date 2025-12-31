@@ -67,13 +67,13 @@ export default function Menu() {
 							exit={{ x: "-100%" }}
 							transition={{ duration: 0.3, ease: "easeOut" }}
 						>
-						{/* Contenu du menu */}
-						<motion.div
-							className="flex flex-col items-center justify-center pt-12 px-8 gap-4 text-xl"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ duration: 0.3, delay: 0.1 }}
-						>
+							{/* Contenu du menu */}
+							<motion.div
+								className="flex flex-col items-center justify-center pt-12 px-8 gap-4 text-xl"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ duration: 0.3, delay: 0.1 }}
+							>
 								{/* Logo central avec effet scale comme sur téléphone */}
 								<motion.div
 									className="flex items-center gap-2"
@@ -96,21 +96,21 @@ export default function Menu() {
 									</h1>
 								</motion.div>
 
-							{/* Trait de séparation */}
-							<motion.div
-								className="w-32 h-[1px] bg-nude-dark my-2"
-								initial={{ scaleX: 0 }}
-								animate={{ scaleX: 1 }}
-								transition={{ duration: 0.5, delay: 0.3 }}
-							></motion.div>
+								{/* Trait de séparation */}
+								<motion.div
+									className="w-32 h-[1px] bg-nude-dark my-2"
+									initial={{ scaleX: 0 }}
+									animate={{ scaleX: 1 }}
+									transition={{ duration: 0.5, delay: 0.3 }}
+								></motion.div>
 
-							{/* Liens de navigation - apparaissent de droite à gauche */}
-							<motion.div
-								className="flex flex-col items-center gap-4"
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ duration: 0.3, delay: 0.4 }}
-							>
+								{/* Liens de navigation - apparaissent de droite à gauche */}
+								<motion.div
+									className="flex flex-col items-center gap-4"
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ duration: 0.3, delay: 0.4 }}
+								>
 									{[
 										{ href: "/", label: "Accueil" },
 										{ href: "/collections", label: "Collections" },
@@ -149,25 +149,25 @@ export default function Menu() {
 									))}
 								</motion.div>
 
-							{/* Trait de séparation */}
-							<motion.div
-								className="w-32 h-[1px] bg-nude-dark my-2"
-								initial={{ scaleX: 0 }}
-								animate={{ scaleX: 1 }}
-								transition={{ duration: 0.5, delay: 0.8 }}
-							></motion.div>
+								{/* Trait de séparation */}
+								<motion.div
+									className="w-32 h-[1px] bg-nude-dark my-2"
+									initial={{ scaleX: 0 }}
+									animate={{ scaleX: 1 }}
+									transition={{ duration: 0.5, delay: 0.8 }}
+								></motion.div>
 
-							{/* Réseaux sociaux - apparaissent de bas en haut en dernier */}
-							<motion.div
-								className="flex flex-col items-center gap-3"
-								initial={{ y: 50, opacity: 0 }}
-								animate={{ y: 0, opacity: 1 }}
-								transition={{
-									duration: 0.6,
-									delay: 0.9,
-									ease: "easeOut",
-								}}
-							>
+								{/* Réseaux sociaux - apparaissent de bas en haut en dernier */}
+								<motion.div
+									className="flex flex-col items-center gap-3"
+									initial={{ y: 50, opacity: 0 }}
+									animate={{ y: 0, opacity: 1 }}
+									transition={{
+										duration: 0.6,
+										delay: 0.9,
+										ease: "easeOut",
+									}}
+								>
 									<motion.h3
 										className="text-logo font-balqis font-semibold text-lg"
 										initial={{ y: 20, opacity: 0 }}
@@ -221,25 +221,25 @@ export default function Menu() {
 									</motion.div>
 								</motion.div>
 
-							{/* Trait de séparation */}
-							<motion.div
-								className="w-32 h-[1px] bg-nude-dark my-2"
-								initial={{ scaleX: 0 }}
-								animate={{ scaleX: 1 }}
-								transition={{ duration: 0.5, delay: 1.4 }}
-							></motion.div>
+								{/* Trait de séparation */}
+								<motion.div
+									className="w-32 h-[1px] bg-nude-dark my-2"
+									initial={{ scaleX: 0 }}
+									animate={{ scaleX: 1 }}
+									transition={{ duration: 0.5, delay: 1.4 }}
+								></motion.div>
 
-							{/* Section PWA - Télécharger l'app */}
-							<motion.div
-								className="flex flex-col items-center gap-3"
-								initial={{ y: 50, opacity: 0 }}
-								animate={{ y: 0, opacity: 1 }}
-								transition={{
-									duration: 0.6,
-									delay: 1.5,
-									ease: "easeOut",
-								}}
-							>
+								{/* Section PWA - Télécharger l'app */}
+								<motion.div
+									className="flex flex-col items-center gap-3"
+									initial={{ y: 50, opacity: 0 }}
+									animate={{ y: 0, opacity: 1 }}
+									transition={{
+										duration: 0.6,
+										delay: 1.5,
+										ease: "easeOut",
+									}}
+								>
 									<motion.h3
 										className="text-logo font-balqis font-semibold text-lg"
 										initial={{ y: 20, opacity: 0 }}

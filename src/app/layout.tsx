@@ -6,7 +6,7 @@ import { QueryProvider } from "@/providers/QueryProvider";
 import { StoreProvider } from "@/stores/StoreProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
@@ -19,18 +19,19 @@ export const metadata: Metadata = {
 		apple: "/apple-touch-icon.png",
 	},
 	manifest: "/manifest.json",
-	themeColor: "#000000",
 	appleWebApp: {
 		capable: true,
 		statusBarStyle: "black-translucent",
 		title: "Lady Haya",
 	},
-	viewport: {
-		width: "device-width",
-		initialScale: 1,
-		maximumScale: 1,
-		viewportFit: "cover",
-	},
+};
+
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 1,
+	viewportFit: "cover",
+	themeColor: "#8a5f3d",
 };
 
 export default function RootLayout({
