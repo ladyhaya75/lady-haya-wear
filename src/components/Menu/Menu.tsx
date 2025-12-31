@@ -6,7 +6,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaInstagram } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
-import InstallButtonMenu from "../PWA/InstallButtonMenu";
+import dynamic from "next/dynamic";
+
+// ✅ Lazy load du bouton PWA (pas de SSR)
+const InstallButtonMenu = dynamic(() => import("../PWA/InstallButtonMenu"), {
+	ssr: false,
+});
 
 export default function Menu() {
 	const [isOpen, setIsOpen] = useState(false);
