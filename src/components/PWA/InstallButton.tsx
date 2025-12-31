@@ -73,10 +73,10 @@ export default function InstallButton() {
 	return (
 		<button
 			onClick={handleInstallClick}
-			className="flex items-center gap-2 rounded-full bg-logo px-4 py-2 text-sm font-medium text-white hover:bg-nude-dark transition-all shadow-md hover:shadow-lg"
+			className="flex items-center gap-2 rounded-full bg-rose-dark-2 border border-logo px-4 py-2 text-sm font-medium text-logo hover:scale-105 transition-all shadow-md hover:shadow-lg cursor-pointer"
 			title="Installer l'application"
 		>
-			<Download className="h-4 w-4" />
+			<Download className="h-4 w-4 text-logo" />
 			<span className="hidden sm:inline">Installer l'app</span>
 		</button>
 	);
