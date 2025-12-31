@@ -17,6 +17,19 @@ export const metadata: Metadata = {
 		icon: "/icon.png",
 		apple: "/apple-touch-icon.png",
 	},
+	manifest: "/manifest.json",
+	themeColor: "#000000",
+	appleWebApp: {
+		capable: true,
+		statusBarStyle: "black-translucent",
+		title: "Lady Haya",
+	},
+	viewport: {
+		width: "device-width",
+		initialScale: 1,
+		maximumScale: 1,
+		viewportFit: "cover",
+	},
 };
 
 export default function RootLayout({
@@ -27,10 +40,17 @@ export default function RootLayout({
 	return (
 		<html lang="fr">
 			<head>
-				<meta
-					name="viewport"
-					content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1"
-				/>
+				{/* Meta tags PWA */}
+				<meta name="application-name" content="Lady Haya Wear" />
+				<meta name="mobile-web-app-capable" content="yes" />
+				<meta name="apple-mobile-web-app-capable" content="yes" />
+				<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+				<meta name="apple-mobile-web-app-title" content="Lady Haya" />
+				<meta name="format-detection" content="telephone=no" />
+				
+				{/* Icons PWA */}
+				<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+				<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
 			</head>
 			<body className="antialiased">
 				<CSRFProtection>

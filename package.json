@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:seed": "npx tsx prisma/seed.ts",
     "test:instagram": "node scripts/test-instagram-auth.js",
-    "test:social": "node scripts/test-social-auth.js"
+    "test:social": "node scripts/test-social-auth.js",
+    "generate-pwa-icons": "node scripts/generate-pwa-icons.js"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
@@ -47,6 +48,7 @@
     "lucide-react": "^0.525.0",
     "next": "^15.5.9",
     "next-auth": "^4.24.11",
+    "next-pwa": "^5.6.0",
     "next-sanity": "^10.0.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -73,6 +75,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "prisma": "^6.16.2",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
