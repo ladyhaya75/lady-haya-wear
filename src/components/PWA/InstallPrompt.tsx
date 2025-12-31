@@ -27,9 +27,16 @@ export default function InstallPrompt() {
 			(window.navigator as any).standalone === true;
 		setIsStandalone(isInStandaloneMode);
 
-		// Vérifier si l'utilisateur a déjà installé
+		// Si l'app était installée mais ne l'est plus (désinstallée)
 		const hasInstalled = localStorage.getItem("pwa-installed");
-		if (hasInstalled || isInStandaloneMode) {
+		if (hasInstalled && !isInStandaloneMode) {
+			// L'app a été désinstallée, nettoyer le localStorage
+			localStorage.removeItem("pwa-installed");
+			localStorage.removeItem("pwa-install-declined");
+		}
+
+		// Ne pas afficher si déjà en mode standalone
+		if (isInStandaloneMode) {
 			return;
 		}
 

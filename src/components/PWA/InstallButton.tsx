@@ -21,7 +21,15 @@ export default function InstallButton() {
 
 		const hasInstalled = localStorage.getItem("pwa-installed");
 
-		if (isStandalone || hasInstalled) {
+		// Si l'app était installée mais ne l'est plus (désinstallée)
+		if (hasInstalled && !isStandalone) {
+			// L'app a été désinstallée, nettoyer le localStorage
+			localStorage.removeItem("pwa-installed");
+			localStorage.removeItem("pwa-install-declined");
+		}
+
+		// Ne pas afficher si déjà en mode standalone
+		if (isStandalone) {
 			return;
 		}
 
