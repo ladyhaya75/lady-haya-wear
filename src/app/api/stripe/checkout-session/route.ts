@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 
+// Forcer le mode dynamique
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
 	try {
 		const {
