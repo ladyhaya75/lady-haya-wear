@@ -22,7 +22,7 @@ interface CartState {
   cartItems: CartItem[];
   isLoading: boolean;
   syncTimeout: NodeJS.Timeout | null;
-  optimisticUpdates: Set<string>; // Track optimistic updates in progress
+  optimisticUpdates: string[]; // Array instead of Set for persistence
   
   // Actions
   addToCart: (newItem: Omit<CartItem, 'id'>, userId?: string | null) => Promise<void>;
@@ -74,26 +74,22 @@ export const useCartStore = create<CartState>()(
       cartItems: [],
       isLoading: false,
       syncTimeout: null,
-      optimisticUpdates: new Set<string>(),
+      optimisticUpdates: [],
 
       addOptimisticUpdate: (itemId) => {
-        set((state) => {
-          const newUpdates = new Set(state.optimisticUpdates);
-          newUpdates.add(itemId);
-          return { optimisticUpdates: newUpdates };
-        });
+        set((state) => ({
+          optimisticUpdates: [...state.optimisticUpdates, itemId]
+        }));
       },
 
       removeOptimisticUpdate: (itemId) => {
-        set((state) => {
-          const newUpdates = new Set(state.optimisticUpdates);
-          newUpdates.delete(itemId);
-          return { optimisticUpdates: newUpdates };
-        });
+        set((state) => ({
+          optimisticUpdates: state.optimisticUpdates.filter(id => id !== itemId)
+        }));
       },
 
       isOptimistic: (itemId) => {
-        return get().optimisticUpdates.has(itemId);
+        return get().optimisticUpdates.includes(itemId);
       },
 
       addToCart: async (newItem, userId = null) => {

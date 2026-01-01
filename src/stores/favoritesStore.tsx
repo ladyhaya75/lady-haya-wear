@@ -22,7 +22,7 @@ export interface Product {
 interface FavoritesState {
   favorites: Product[];
   isLoading: boolean;
-  optimisticUpdates: Set<string>; // Track optimistic updates in progress
+  optimisticUpdates: string[]; // Array instead of Set for persistence
   
   // Actions
   addToFavorites: (product: Product, userId: string | null) => Promise<void>;
@@ -45,26 +45,22 @@ export const useFavoritesStore = create<FavoritesState>()(
     (set, get) => ({
       favorites: [],
       isLoading: false,
-      optimisticUpdates: new Set<string>(),
+      optimisticUpdates: [],
 
       addOptimisticUpdate: (productId) => {
-        set((state) => {
-          const newUpdates = new Set(state.optimisticUpdates);
-          newUpdates.add(productId);
-          return { optimisticUpdates: newUpdates };
-        });
+        set((state) => ({
+          optimisticUpdates: [...state.optimisticUpdates, productId]
+        }));
       },
 
       removeOptimisticUpdate: (productId) => {
-        set((state) => {
-          const newUpdates = new Set(state.optimisticUpdates);
-          newUpdates.delete(productId);
-          return { optimisticUpdates: newUpdates };
-        });
+        set((state) => ({
+          optimisticUpdates: state.optimisticUpdates.filter(id => id !== productId)
+        }));
       },
 
       isOptimistic: (productId) => {
-        return get().optimisticUpdates.has(productId);
+        return get().optimisticUpdates.includes(productId);
       },
 
       addToFavorites: async (product, userId) => {

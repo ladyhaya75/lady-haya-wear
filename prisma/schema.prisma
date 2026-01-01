@@ -159,6 +159,10 @@ model Order {
   paymentMethod   String?     // Méthode de paiement
   paymentStatus   PaymentStatus @default(PENDING)
   
+  // Stripe (pour paiements Stripe uniquement)
+  stripeSessionId String?     @unique // ID de la session Stripe Checkout
+  stripePaymentIntentId String? // ID du Payment Intent Stripe
+  
   // Adresses
   billingAddressId  String?
   shippingAddressId String?
