@@ -1,4 +1,4 @@
-// Configuration lazy de l'API Brevo (initialisé uniquement quand nécessaire)
+// Configuration lazy de l'API Brevo (initialisé uniquement à l'exécution)
 let apiInstance: any = null;
 
 async function getBrevoApiInstance() {
