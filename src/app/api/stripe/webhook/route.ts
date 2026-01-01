@@ -118,6 +118,12 @@ export async function POST(req: NextRequest) {
 			
 			// 1. Email de confirmation au client avec facture PDF
 			try {
+				// Vérifier que l'adresse existe avant de générer le PDF
+				if (!order.shippingAddress) {
+					console.error("Adresse de livraison manquante, impossible de générer le PDF");
+					throw new Error("Adresse de livraison manquante");
+				}
+
 				console.log("Début de génération de la facture PDF...");
 
 				// Générer la facture PDF
@@ -127,17 +133,15 @@ export async function POST(req: NextRequest) {
 					customerName: customerName,
 					customerEmail: customerEmail,
 					customerPhone: user.profile?.phone || undefined,
-					shippingAddress: order.shippingAddress
-						? {
-								...order.shippingAddress,
-								civility:
-									order.shippingAddress.civility === "MR"
-										? "MR" as const
-										: order.shippingAddress.civility === "MME"
-											? "MME" as const
-											: undefined,
-							}
-						: undefined,
+					shippingAddress: {
+						...order.shippingAddress,
+						civility:
+							order.shippingAddress.civility === "MR"
+								? "MR" as const
+								: order.shippingAddress.civility === "MME"
+									? "MME" as const
+									: undefined,
+					},
 					items: order.items.map((item) => ({
 						name: item.productName,
 						quantity: item.quantity,
