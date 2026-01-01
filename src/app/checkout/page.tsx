@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { FaCcMastercard, FaCcPaypal, FaCcVisa, FaLock } from "react-icons/fa";
 import { FiArrowLeft, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { getStripe } from "@/lib/stripe-client";
 
 const fakeUser = {
 	nom: "Dupont",
@@ -22,12 +23,6 @@ export default function CheckoutPage() {
 	const [showAddressMenu, setShowAddressMenu] = useState(false);
 	const [selectedDelivery, setSelectedDelivery] = useState("domicile");
 	const [selectedPayment, setSelectedPayment] = useState("");
-	const [cardInfo, setCardInfo] = useState({
-		number: "",
-		name: "",
-		expiry: "",
-		cvc: "",
-	});
 	const [civility, setCivility] = useState("Mme");
 	const [user, setUser] = useState<any>(null);
 	const [address, setAddress] = useState<any>(null);
@@ -664,124 +659,23 @@ export default function CheckoutPage() {
 										<input
 											type="radio"
 											name="payment"
-											value="cb"
-											checked={selectedPayment === "cb"}
-											onChange={() => setSelectedPayment("cb")}
+											value="stripe"
+											checked={selectedPayment === "stripe"}
+											onChange={() => setSelectedPayment("stripe")}
 											className="sr-only"
 										/>
 										<span
-											className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedPayment === "cb" ? "bg-nude-dark" : "bg-white"}`}
+											className={`w-4 h-4 rounded-full border-2 border-gray-500 flex items-center justify-center transition-colors ${selectedPayment === "stripe" ? "bg-nude-dark" : "bg-white"}`}
 										></span>
 										<span className="flex items-center gap-1">
-											Carte bancaire
+											Carte bancaire (Stripe)
 											<FaCcVisa className="text-blue-600 text-lg" />
 											<FaCcMastercard className="text-orange-600 text-lg" />
 										</span>
 									</label>
-									{selectedPayment === "cb" && (
-										<div className="ml-6 mt-2 flex flex-col gap-2">
-											<input
-												type="text"
-												inputMode="numeric"
-												pattern="[0-9 ]{19}"
-												maxLength={19}
-												placeholder="1234 5678 9012 3456"
-												className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-[#b49982] font-mono tracking-wider"
-												value={cardInfo.number}
-												onChange={(e) => {
-													// Supprimer tous les caractères non numériques
-													const digits = e.target.value
-														.replace(/\D/g, "")
-														.slice(0, 16);
-													// Formater par groupes de 4 avec des espaces
-													const formatted = digits.replace(
-														/(\d{4})(?=\d)/g,
-														"$1 "
-													);
-													setCardInfo({ ...cardInfo, number: formatted });
-												}}
-												autoComplete="cc-number"
-											/>
-											<input
-												type="text"
-												inputMode="text"
-												pattern="[A-Za-zÀ-ÿ\s]+"
-												maxLength={26}
-												placeholder="Nom sur la carte"
-												className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-[#b49982]"
-												value={cardInfo.name}
-												onChange={(e) => {
-													const val = e.target.value
-														.replace(/[^A-Za-zÀ-ÿ\s]/g, "")
-														.slice(0, 26);
-													setCardInfo({ ...cardInfo, name: val });
-												}}
-												autoComplete="cc-name"
-											/>
-											<div className="flex gap-2">
-												<input
-													type="text"
-													inputMode="numeric"
-													pattern="[0-9]{2}/[0-9]{2}"
-													maxLength={5}
-													placeholder="MM/AA"
-													className="border rounded px-2 py-1 w-1/2 focus:outline-none focus:ring-2 focus:ring-[#b49982]"
-													value={cardInfo.expiry}
-													onChange={(e) => {
-														let val = e.target.value.replace(/[^0-9]/g, "");
-
-														// Validation du mois (ne peut pas dépasser 12)
-														if (val.length >= 2) {
-															const month = parseInt(val.slice(0, 2));
-															if (month > 12) {
-																// Si le mois dépasse 12, on limite à 12
-																val = "12" + val.slice(2);
-															} else if (month === 0) {
-																// Si le mois est 00, on le corrige à 01
-																val = "01" + val.slice(2);
-															}
-															// Ajouter le "/"
-															val = val.slice(0, 2) + "/" + val.slice(2, 4);
-														}
-
-														setCardInfo({
-															...cardInfo,
-															expiry: val.slice(0, 5),
-														});
-													}}
-													onKeyDown={(e) => {
-														// Permettre la suppression du "/" avec la touche Backspace
-														if (
-															e.key === "Backspace" &&
-															cardInfo.expiry.endsWith("/")
-														) {
-															e.preventDefault();
-															const newValue = cardInfo.expiry.slice(0, -1);
-															setCardInfo({
-																...cardInfo,
-																expiry: newValue,
-															});
-														}
-													}}
-													autoComplete="cc-exp"
-												/>
-												<input
-													type="text"
-													inputMode="numeric"
-													pattern="[0-9]{3}"
-													maxLength={3}
-													placeholder="CVC"
-													className="border rounded px-2 py-1 w-1/2 focus:outline-none focus:ring-2 focus:ring-[#b49982]"
-													value={cardInfo.cvc}
-													onChange={(e) => {
-														const val = e.target.value
-															.replace(/\D/g, "")
-															.slice(0, 3);
-														setCardInfo({ ...cardInfo, cvc: val });
-													}}
-													autoComplete="cc-csc"
-												/>
-											</div>
+									{selectedPayment === "stripe" && (
+										<div className="ml-6 mt-2 text-xs text-blue-600">
+											Paiement sécurisé via Stripe
 										</div>
 									)}
 									<label className="flex items-center gap-2 text-gray-700 cursor-pointer">
@@ -1017,7 +911,7 @@ export default function CheckoutPage() {
 							<div className="flex flex-col sm:flex-row lg:flex-col gap-3 mt-4">
 								<button
 									className={`flex-1 max-w-xs sm:max-w-sm py-3 px-6 rounded-2xl text-base font-semibold transition-all duration-300 text-center cursor-pointer
-    ${selectedPayment === "paypal" ? "bg-[#0750B4] hover:bg-[#063a80] text-white" : "bg-nude-dark border-2 text-white hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark"}`}
+    ${selectedPayment === "paypal" ? "bg-[#0750B4] hover:bg-[#063a80] text-white" : selectedPayment === "stripe" ? "bg-[#635BFF] hover:bg-[#0A2540] text-white" : "bg-nude-dark border-2 text-white hover:bg-rose-dark hover:text-nude-dark hover:border-nude-dark"}`}
 									onClick={async () => {
 										if (!selectedAddressId) {
 											toast.error(
@@ -1030,14 +924,54 @@ export default function CheckoutPage() {
 											return;
 										}
 
-										// Simuler le processus de paiement
 										setLoading(true);
 
 										try {
-											// Simuler un délai de traitement du paiement
+											// Si paiement Stripe, créer une session Stripe Checkout
+											if (selectedPayment === "stripe") {
+												const orderData = {
+													cartItems,
+													selectedAddressId,
+													selectedDelivery,
+													promoCodeId: appliedPromoCode?.id || null,
+													promoDiscount,
+													subtotal: subtotalHT,
+													shippingCost: livraison,
+													taxAmount: tva,
+													total: totalTTC,
+													subscribeNewsletter,
+												};
+
+												const response = await fetch(
+													"/api/stripe/checkout-session",
+													{
+														method: "POST",
+														headers: {
+															"Content-Type": "application/json",
+														},
+														body: JSON.stringify(orderData),
+													}
+												);
+
+												const data = await response.json();
+
+												if (response.ok && data.url) {
+													// Rediriger vers Stripe Checkout
+													window.location.href = data.url;
+												} else {
+													toast.error(
+														data.error ||
+															"Erreur lors de la création de la session de paiement"
+													);
+													setLoading(false);
+												}
+												return;
+											}
+
+											// Simuler un délai de traitement du paiement pour les autres méthodes
 											await new Promise((resolve) => setTimeout(resolve, 2000));
 
-											// Créer la commande via l'API
+											// Créer la commande via l'API pour les autres méthodes
 											const orderData = {
 												cartItems,
 												selectedAddressId,
@@ -1050,14 +984,6 @@ export default function CheckoutPage() {
 												taxAmount: tva,
 												total: totalTTC,
 												subscribeNewsletter,
-												// Nettoyer le numéro de carte des espaces pour l'envoi au serveur
-												cardInfo:
-													selectedPayment === "cb"
-														? {
-																...cardInfo,
-																number: cardInfo.number.replace(/\s/g, ""),
-															}
-														: undefined,
 											};
 
 											const response = await fetch("/api/orders", {
@@ -1122,6 +1048,8 @@ export default function CheckoutPage() {
 										</div>
 									) : selectedPayment === "paypal" ? (
 										"Payer avec Paypal"
+									) : selectedPayment === "stripe" ? (
+										"Payer avec Stripe"
 									) : (
 										"Payer"
 									)}
