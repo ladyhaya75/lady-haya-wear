@@ -35,19 +35,25 @@ export async function POST(req: NextRequest) {
 
 		const { user } = await authRes.json();
 
-		// Créer les line items pour Stripe
-		const lineItems = cartItems.map((item: any) => ({
+	// Créer les line items pour Stripe
+	const lineItems = cartItems.map((item: any) => {
+		// Stripe n'accepte que des URLs HTTPS absolues
+		const imageUrl = item.image?.startsWith('http') ? item.image : null;
+		
+		return {
 			price_data: {
 				currency: "eur",
 				product_data: {
 					name: item.name,
 					description: `${item.color} - Taille ${item.size}`,
-					images: [item.image],
+					// Ajouter l'image uniquement si c'est une URL valide
+					...(imageUrl && { images: [imageUrl] }),
 				},
 				unit_amount: Math.round(item.price * 100), // Stripe utilise les centimes
 			},
 			quantity: item.quantity,
-		}));
+		};
+	});
 
 		// Ajouter les frais de livraison comme line item séparé
 		if (shippingCost > 0) {
