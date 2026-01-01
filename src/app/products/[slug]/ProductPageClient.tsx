@@ -142,8 +142,8 @@ export function ProductPageClient({
 		setIsAddingToCart(true);
 
 		// Calculer le prix final (avec réduction si applicable)
-		const finalPrice = product.discountPercentage 
-			? product.price * (1 - product.discountPercentage / 100)
+		const finalPrice = product.promoPercentage 
+			? product.price * (1 - product.promoPercentage / 100)
 			: product.price;
 
 		// Simuler un délai pour l'ajout au panier
@@ -208,10 +208,6 @@ export function ProductPageClient({
 	);
 
 	const handleToggleFavorite = useCallback(() => {
-		const isCurrentlyInFavorites = favorites.some(
-			(fav: any) => fav.productId === product._id
-		);
-
 		toggleFavorite({
 			productId: product._id,
 			name: product.name,
@@ -223,28 +219,9 @@ export function ProductPageClient({
 			slug: product.slug?.current || product._id,
 			category: product.category,
 		}, user?.id || null);
-
-		// Notification pour les favoris
-		if (isCurrentlyInFavorites) {
-			toast.info(`${product.name} retiré des favoris`, {
-				position: "top-right",
-				autoClose: 3000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-			});
-		} else {
-			toast.success(`${product.name} ajouté aux favoris !`, {
-				position: "top-right",
-				autoClose: 3000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				});
-		}
-	}, [favorites, product, selectedColor, toggleFavorite, user?.id]);
+		
+		// Le toast est géré par favoritesStore, pas besoin de le dupliquer ici
+	}, [product, selectedColor, toggleFavorite, user?.id]);
 
 	// Fonctions pour le scroll horizontal des produits similaires
 	const scrollSimilarProducts = useCallback(
