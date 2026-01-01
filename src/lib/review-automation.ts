@@ -1,5 +1,4 @@
 import { randomBytes } from "crypto";
-import { sendReviewRequestEmail } from "./brevo";
 import { prisma } from "./prisma";
 
 /**
@@ -95,6 +94,7 @@ export async function triggerReviewRequestForOrder(orderId: string) {
 
 		// Envoyer l'email de demande d'avis
 		console.log(`📧 Envoi email de demande d'avis à ${order.customerEmail}`);
+		const { sendReviewRequestEmail } = await import("./brevo");
 		await sendReviewRequestEmail(order.customerEmail, reviewData);
 
 		console.log(
