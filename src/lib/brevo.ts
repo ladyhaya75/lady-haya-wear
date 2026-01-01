@@ -1,13 +1,18 @@
 import * as SibApiV3Sdk from "@getbrevo/brevo";
 
-// Configuration de l'API Brevo
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+// Configuration lazy de l'API Brevo (initialisé uniquement quand nécessaire)
+let apiInstance: SibApiV3Sdk.TransactionalEmailsApi | null = null;
 
-// Configuration de l'API key (à définir dans les variables d'environnement)
-apiInstance.setApiKey(
-	SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
-	process.env.BREVO_API_KEY || ""
-);
+function getBrevoApiInstance() {
+	if (!apiInstance) {
+		apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+		apiInstance.setApiKey(
+			SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
+			process.env.BREVO_API_KEY || ""
+		);
+	}
+	return apiInstance;
+}
 
 // Types pour les emails
 interface EmailData {
@@ -143,6 +148,7 @@ export async function sendOrderConfirmationEmail(
 	}
 
 	try {
+		const apiInstance = getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de confirmation envoyé avec succès:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -184,6 +190,7 @@ export async function sendWelcomeEmail(email: string, customerName: string) {
 	};
 
 	try {
+		const apiInstance = getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de bienvenue envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -224,6 +231,7 @@ export async function sendPasswordResetEmail(
 	};
 
 	try {
+		const apiInstance = getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de récupération envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -250,6 +258,7 @@ export async function sendCustomEmail(emailData: EmailData) {
 	};
 
 	try {
+		const apiInstance = getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email personnalisé envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -290,6 +299,7 @@ export async function sendContactEmail(contactData: {
 	};
 
 	try {
+		const apiInstance = getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de contact envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -496,6 +506,7 @@ export async function sendOrderStatusUpdateEmail(
 	};
 
 	try {
+		const apiInstance = getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log(
 			`Email de mise à jour de statut (${orderData.status}) envoyé:`,
@@ -609,6 +620,7 @@ export async function sendReviewRequestEmail(
 	};
 
 	try {
+		const apiInstance = getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de demande d'avis envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
