@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
 		root: __dirname,
 	},
 	// Configuration pour les timeouts des API routes
-	serverExternalPackages: ["@prisma/client"],
+	serverExternalPackages: ["@prisma/client", "@getbrevo/brevo"],
 };
 
 export default withPWA(nextConfig);
