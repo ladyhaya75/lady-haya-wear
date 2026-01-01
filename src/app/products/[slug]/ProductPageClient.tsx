@@ -141,13 +141,18 @@ export function ProductPageClient({
 
 		setIsAddingToCart(true);
 
+		// Calculer le prix final (avec réduction si applicable)
+		const finalPrice = product.discountPercentage 
+			? product.price * (1 - product.discountPercentage / 100)
+			: product.price;
+
 		// Simuler un délai pour l'ajout au panier
 		setTimeout(() => {
 			addToCart({
 				productId: product.product?._id || product._id, // Toujours l'ID du produit principal
 				name: product.name,
-				price: product.price,
-				originalPrice: product.originalPrice,
+				price: finalPrice, // Prix avec réduction
+				originalPrice: product.originalPrice || product.price, // Prix d'origine
 				image:
 					urlFor(selectedColor.mainImage)?.url() || "/assets/placeholder.jpg",
 				imageAlt: selectedColor.mainImage?.alt || product.name,
@@ -171,7 +176,7 @@ export function ProductPageClient({
 						{product.name} - {selectedColor.name} - Taille {selectedSize}
 					</div>
 					<div className="text-sm opacity-90">
-						Quantité : {quantity} - {product.price.toFixed(2)} €
+						Quantité : {quantity} - {finalPrice.toFixed(2)} €
 					</div>
 				</div>,
 				{
