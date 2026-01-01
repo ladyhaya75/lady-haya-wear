@@ -1,4 +1,3 @@
-import { sendCustomEmail, sendOrderConfirmationEmail } from "@/lib/brevo";
 import { generateInvoicePDFAsBuffer } from "@/lib/invoice-generator";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
@@ -7,6 +6,9 @@ import { logSecurityEvent } from "@/lib/security";
 import { checkStockAvailability, decrementStock } from "@/lib/stock";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
+
+// Forcer le mode dynamique pour éviter l'évaluation de Brevo au build
+export const dynamic = 'force-dynamic';
 
 // Fonction pour générer un numéro de commande unique
 function generateOrderNumber(): string {
@@ -245,6 +247,7 @@ export async function POST(request: NextRequest) {
 
 			console.log("Envoi de l'email de confirmation...");
 			// Envoyer l'email avec la facture PDF en pièce jointe
+			const { sendOrderConfirmationEmail } = await import("@/lib/brevo");
 			await sendOrderConfirmationEmail(user.email, orderData, pdfBuffer);
 			console.log("Email de confirmation avec facture PDF envoyé au client");
 		} catch (error) {
@@ -334,6 +337,7 @@ export async function POST(request: NextRequest) {
         `,
 			};
 
+			const { sendCustomEmail } = await import("@/lib/brevo");
 			await sendCustomEmail(vendorEmailData);
 			console.log("Email de notification envoyé au vendeur");
 		} catch (error) {

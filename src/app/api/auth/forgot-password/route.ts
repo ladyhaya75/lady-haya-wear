@@ -1,6 +1,8 @@
-import { sendPasswordResetEmail } from "@/lib/brevo";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+
+// Forcer le mode dynamique pour éviter l'évaluation de Brevo au build
+export const dynamic = 'force-dynamic';
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: NextRequest) {
@@ -23,6 +25,7 @@ export async function POST(request: NextRequest) {
 			data: { resetToken, resetTokenExpiry },
 		});
 		// Envoyer l'email via Brevo
+		const { sendPasswordResetEmail } = await import("@/lib/brevo");
 		await sendPasswordResetEmail(email, resetToken);
 		return NextResponse.json({ success: true });
 	} catch (error) {

@@ -1,7 +1,9 @@
-import { sendReviewRequestEmail } from "@/lib/brevo";
 import { prisma } from "@/lib/prisma";
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+
+// Forcer le mode dynamique pour éviter l'évaluation de Brevo au build
+export const dynamic = 'force-dynamic';
 
 // GET - Job CRON pour envoyer les emails de demande d'avis
 export async function GET(request: NextRequest) {
@@ -116,6 +118,7 @@ export async function GET(request: NextRequest) {
 				};
 
 				// Envoyer l'email
+				const { sendReviewRequestEmail } = await import("@/lib/brevo");
 				await sendReviewRequestEmail(order.customerEmail, reviewData);
 
 				emailsSent++;

@@ -1,4 +1,3 @@
-import { sendContactEmail } from "@/lib/brevo";
 import {
 	checkRateLimit as checkRateLimitMemory,
 	logSecurityEvent,
@@ -10,6 +9,9 @@ import {
 import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
+// Forcer le mode dynamique pour éviter l'évaluation de Brevo au build
+export const dynamic = 'force-dynamic';
 
 const contactSchema = z.object({
 	nom: secureNameSchema,
@@ -70,6 +72,7 @@ export async function POST(req: NextRequest) {
 		}
 
 		// ===== ENVOI SÉCURISÉ =====
+		const { sendContactEmail } = await import("@/lib/brevo");
 		await sendContactEmail({
 			name: parsed.data.nom,
 			email: parsed.data.email,

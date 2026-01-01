@@ -1,8 +1,10 @@
-import { sendOrderStatusUpdateEmail } from "@/lib/brevo";
 import { prisma } from "@/lib/prisma";
 import { triggerReviewRequestForOrder } from "@/lib/review-automation";
 import { incrementStock, type CartItem } from "@/lib/stock";
 import { NextRequest, NextResponse } from "next/server";
+
+// Forcer le mode dynamique pour éviter l'évaluation de Brevo au build
+export const dynamic = 'force-dynamic';
 
 // GET - Récupérer une commande spécifique
 export async function GET(
@@ -171,11 +173,12 @@ export async function PUT(
 					trackingNumber: trackingNumber,
 					carrier: carrier,
 					trackingUrl: trackingUrl,
-				};
+			};
 
-				await sendOrderStatusUpdateEmail(order.customerEmail, orderData);
-				console.log(
-					`Email de mise à jour de statut envoyé pour la commande #${order.orderNumber}`
+			const { sendOrderStatusUpdateEmail } = await import("@/lib/brevo");
+			await sendOrderStatusUpdateEmail(order.customerEmail, orderData);
+			console.log(
+				`Email de mise à jour de statut envoyé pour la commande #${order.orderNumber}`
 				);
 			} catch (error) {
 				console.error(

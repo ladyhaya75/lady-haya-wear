@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
-import { sendCustomEmail, sendOrderConfirmationEmail } from "@/lib/brevo";
 import { generateInvoicePDFAsBuffer } from "@/lib/invoice-generator";
 
 const prisma = new PrismaClient();
+
+// Forcer le mode dynamique pour éviter l'évaluation au build
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
 	const body = await req.text();
@@ -181,6 +183,7 @@ export async function POST(req: NextRequest) {
 				};
 
 				// Envoyer l'email avec la facture PDF en pièce jointe
+				const { sendOrderConfirmationEmail } = await import("@/lib/brevo");
 				await sendOrderConfirmationEmail(customerEmail, orderData, pdfBuffer);
 				console.log("Email de confirmation avec facture PDF envoyé au client");
 			} catch (error) {
@@ -268,6 +271,7 @@ export async function POST(req: NextRequest) {
           `,
 				};
 
+				const { sendCustomEmail } = await import("@/lib/brevo");
 				await sendCustomEmail(vendorEmailData);
 				console.log("Email de notification envoyé au vendeur");
 			} catch (error) {

@@ -1,11 +1,16 @@
-import { SendSmtpEmail, TransactionalEmailsApi } from "@getbrevo/brevo";
 import { NextRequest, NextResponse } from "next/server";
 
-const apiInstance = new TransactionalEmailsApi();
-apiInstance.setApiKey(0, process.env.BREVO_API_KEY || "");
+// Forcer le mode dynamique pour éviter l'évaluation de Brevo au build
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
 	try {
+		// Import dynamique de Brevo
+		const { SendSmtpEmail, TransactionalEmailsApi } = await import("@getbrevo/brevo");
+		
+		const apiInstance = new TransactionalEmailsApi();
+		apiInstance.setApiKey(0, process.env.BREVO_API_KEY || "");
+		
 		const { to, subject, html } = await request.json();
 
 		if (!to || !subject || !html) {
