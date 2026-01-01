@@ -136,14 +136,24 @@ export default function CartPage() {
 															{item.name}
 														</h3>
 														<div className="text-left sm:text-right">
-															{item.originalPrice &&
-															item.originalPrice < item.price ? (
-																<div className="text-sm text-gray-400 line-through">
-																	{item.originalPrice.toFixed(2)}€
-																</div>
-															) : null}
-															<div className="text-lg sm:text-xl font-semibold text-logo">
-																{item.price.toFixed(2)}€
+															<div className="flex items-center gap-2 justify-start sm:justify-end flex-wrap">
+																{item.promoPercentage ? (
+																	<>
+																		<p className="text-lg sm:text-xl font-semibold text-logo">
+																			{item.price.toFixed(2)}€
+																		</p>
+																		<p className="text-sm text-gray-400 line-through">
+																			{item.originalPrice?.toFixed(2)}€
+																		</p>
+																		<span className="bg-orange-400 text-white text-xs px-2 py-1 rounded-md">
+																			-{item.promoPercentage}%
+																		</span>
+																	</>
+																) : (
+																	<p className="text-lg sm:text-xl font-semibold text-logo">
+																		{item.price.toFixed(2)}€
+																	</p>
+																)}
 															</div>
 														</div>
 													</div>

@@ -146,13 +146,19 @@ export function ProductPageClient({
 			? product.price * (1 - product.promoPercentage / 100)
 			: product.price;
 
+		// Prix d'origine pour l'affichage barré
+		const originalPrice = product.promoPercentage 
+			? product.price // Si promo, le prix d'origine est le prix de base
+			: undefined; // Sinon, pas de prix d'origine à afficher
+
 		// Simuler un délai pour l'ajout au panier
 		setTimeout(() => {
 			addToCart({
 				productId: product.product?._id || product._id, // Toujours l'ID du produit principal
 				name: product.name,
 				price: finalPrice, // Prix avec réduction
-				originalPrice: product.originalPrice || product.price, // Prix d'origine
+				originalPrice: originalPrice, // Prix d'origine (avant réduction)
+				promoPercentage: product.promoPercentage, // Pourcentage de réduction
 				image:
 					urlFor(selectedColor.mainImage)?.url() || "/assets/placeholder.jpg",
 				imageAlt: selectedColor.mainImage?.alt || product.name,
@@ -213,6 +219,7 @@ export function ProductPageClient({
 			name: product.name,
 			price: product.price,
 			originalPrice: product.originalPrice,
+			promoPercentage: product.promoPercentage, // Ajout du promo
 			image:
 				urlFor(selectedColor?.mainImage)?.url() || "/assets/placeholder.jpg",
 			imageAlt: selectedColor?.mainImage?.alt || product.name,

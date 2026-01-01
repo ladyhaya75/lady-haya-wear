@@ -9,6 +9,7 @@ export async function getProductDetails(productId: string) {
         name,
         price,
         originalPrice,
+        promoPercentage,
         "image": mainImage.asset->url,
         "imageAlt": mainImage.alt,
         "hoverImage": hoverImage.asset->url,
@@ -38,12 +39,18 @@ export async function enrichCartItems(dbItems: any[]) {
 		const productDetails = await getProductDetails(dbItem.productId);
 
 		if (productDetails) {
+			// Si le produit a un promoPercentage, originalPrice est le prix de base
+			const originalPrice = productDetails.promoPercentage 
+				? productDetails.price 
+				: undefined;
+
 			enrichedItems.push({
 				id: `${dbItem.productId}-${dbItem.colorName}-${dbItem.sizeName}`,
 				productId: dbItem.productId,
 				name: productDetails.name,
 				price: dbItem.price,
-				originalPrice: productDetails.originalPrice,
+				originalPrice: originalPrice,
+				promoPercentage: productDetails.promoPercentage,
 				image: productDetails.image,
 				imageAlt: productDetails.imageAlt,
 				color: dbItem.colorName || "",
@@ -72,6 +79,7 @@ export async function enrichFavorites(dbFavorites: any[]) {
 				name: productDetails.name,
 				price: productDetails.price,
 				originalPrice: productDetails.originalPrice,
+				promoPercentage: productDetails.promoPercentage,
 				image: productDetails.image,
 				imageAlt: productDetails.imageAlt,
 				slug: productDetails.slug,

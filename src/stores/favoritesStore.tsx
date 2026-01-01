@@ -7,6 +7,7 @@ export interface Product {
   name: string;
   price: number;
   originalPrice?: number;
+  promoPercentage?: number; // Ajout du pourcentage de promo
   image: string;
   imageAlt?: string;
   slug?: string;

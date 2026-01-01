@@ -36,43 +36,25 @@ export default function ProductList({ featuredProducts }: ProductListProps) {
 
 			const isCurrentlyInFavorites = favoritesMap.has(product._id);
 
-			// Créer l'objet Product attendu par le store
-			const productForFavorites = {
-				productId: product._id,
-				name: product.name,
-				price: product.price || 0,
-				originalPrice: product.originalPrice,
-				image: urlFor(product.mainImage)?.url() || "/assets/placeholder.jpg",
-				imageAlt: product.mainImage?.alt || product.name,
-				slug: product.slug?.current || product._id,
-				category: product.category,
-			};
+		// Créer l'objet Product attendu par le store
+		const productForFavorites = {
+			productId: product._id,
+			name: product.name,
+			price: product.price || 0,
+			originalPrice: product.originalPrice,
+			promoPercentage: product.promoPercentage, // Ajout du promo
+			image: urlFor(product.mainImage)?.url() || "/assets/placeholder.jpg",
+			imageAlt: product.mainImage?.alt || product.name,
+			slug: product.slug?.current || product._id,
+			category: product.category,
+		};
 
-			toggleFavorite(productForFavorites, userId);
+		toggleFavorite(productForFavorites, userId);
 
-			// Notification pour les favoris
-			if (isCurrentlyInFavorites) {
-				toast.info(`${product.name} retiré des favoris`, {
-					position: "top-right",
-					autoClose: 3000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-				});
-			} else {
-				toast.success(`${product.name} ajouté aux favoris !`, {
-					position: "top-right",
-					autoClose: 3000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-				});
-			}
-		},
-		[favoritesMap, toggleFavorite, userId]
-	);
+		// Le toast est géré par favoritesStore
+	},
+	[favoritesMap, toggleFavorite, userId]
+);
 
 	return (
 		<div className="mb-12">

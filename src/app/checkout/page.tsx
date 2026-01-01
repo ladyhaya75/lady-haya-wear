@@ -729,8 +729,29 @@ export default function CheckoutPage() {
 													{item.quantity}
 												</div>
 											</div>
-											<div className="text-sm font-semibold">
-												{(item.price * item.quantity).toFixed(2)} €
+											<div className="flex flex-col items-end gap-1">
+												{item.promoPercentage ? (
+													<>
+														<div className="flex items-center gap-2">
+															<span className="text-sm font-semibold">
+																{(item.price * item.quantity).toFixed(2)} €
+															</span>
+															<span className="bg-orange-400 text-white text-xs px-2 py-0.5 rounded">
+																-{item.promoPercentage}%
+															</span>
+														</div>
+														<span className="text-xs text-gray-400 line-through">
+															{item.originalPrice
+																? (item.originalPrice * item.quantity).toFixed(2)
+																: ""}{" "}
+															€
+														</span>
+													</>
+												) : (
+													<div className="text-sm font-semibold">
+														{(item.price * item.quantity).toFixed(2)} €
+													</div>
+												)}
 											</div>
 										</div>
 									))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/stores/authStore";
-import { useFavoritesStore } from "@/stores/favoritesStore";
+import { useFavoritesStore, type Product } from "@/stores/favoritesStore";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { FaTrash } from "react-icons/fa";
@@ -13,9 +13,13 @@ interface FavModalProps {
 }
 
 export default function FavModal({ isOpen, onClose }: FavModalProps) {
-	const favorites = useFavoritesStore((state) => state.favorites);
-	const removeFromFavorites = useFavoritesStore((state) => state.removeFromFavorites);
-	const clearAllFavorites = useFavoritesStore((state) => state.clearAllFavorites);
+	const favorites: Product[] = useFavoritesStore((state) => state.favorites);
+	const removeFromFavorites = useFavoritesStore(
+		(state) => state.removeFromFavorites
+	);
+	const clearAllFavorites = useFavoritesStore(
+		(state) => state.clearAllFavorites
+	);
 	const user = useAuthStore((state) => state.user);
 
 	const handleBackdropClick = (e: React.MouseEvent) => {
@@ -24,7 +28,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 		}
 	};
 
-	const handleRemoveFavorite = (favorite: any) => {
+	const handleRemoveFavorite = (favorite: Product) => {
 		removeFromFavorites(favorite.productId, user?.id || null);
 	};
 
@@ -49,7 +53,7 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
-					className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+					className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
 					onClick={handleBackdropClick}
 				>
 					<motion.div
@@ -111,9 +115,30 @@ export default function FavModal({ isOpen, onClose }: FavModalProps) {
 														<p className="text-gray-500 text-sm truncate">
 															Catégorie : {favorite.category?.name}
 														</p>
-														<p className="text-nude-dark font-semibold">
-															{favorite.price} €
-														</p>
+														{/* Prix avec réduction si applicable */}
+														<div className="flex items-center gap-2">
+															{favorite.promoPercentage ? (
+																<>
+																	<p className="text-nude-dark font-semibold">
+																		{(
+																			favorite.price *
+																			(1 - favorite.promoPercentage / 100)
+																		).toFixed(2)}{" "}
+																		€
+																	</p>
+																	<p className="text-gray-400 line-through text-sm">
+																		{favorite.price} €
+																	</p>
+																	<span className="bg-orange-400 text-white text-xs px-2 py-1 rounded">
+																		-{favorite.promoPercentage}%
+																	</span>
+																</>
+															) : (
+																<p className="text-nude-dark font-semibold">
+																	{favorite.price} €
+																</p>
+															)}
+														</div>
 													</Link>
 												</div>
 
