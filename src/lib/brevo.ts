@@ -1,10 +1,10 @@
-import * as SibApiV3Sdk from "@getbrevo/brevo";
-
 // Configuration lazy de l'API Brevo (initialisé uniquement quand nécessaire)
-let apiInstance: SibApiV3Sdk.TransactionalEmailsApi | null = null;
+let apiInstance: any = null;
 
-function getBrevoApiInstance() {
+async function getBrevoApiInstance() {
 	if (!apiInstance) {
+		// Import dynamique pour éviter l'initialisation au build
+		const SibApiV3Sdk = await import("@getbrevo/brevo");
 		apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 		apiInstance.setApiKey(
 			SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
@@ -12,6 +12,12 @@ function getBrevoApiInstance() {
 		);
 	}
 	return apiInstance;
+}
+
+// Helper pour créer un SendSmtpEmail
+async function createSendSmtpEmail() {
+	const SibApiV3Sdk = await import("@getbrevo/brevo");
+	return new SibApiV3Sdk.SendSmtpEmail();
 }
 
 // Types pour les emails
@@ -50,7 +56,7 @@ export async function sendOrderConfirmationEmail(
 	orderData: OrderConfirmationData,
 	pdfBuffer?: Buffer
 ) {
-	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+	const sendSmtpEmail = await createSendSmtpEmail();
 
 	sendSmtpEmail.to = [{ email }];
 	sendSmtpEmail.subject = `Confirmation de commande #${orderData.orderNumber} - Lady Haya Wear`;
@@ -148,7 +154,7 @@ export async function sendOrderConfirmationEmail(
 	}
 
 	try {
-		const apiInstance = getBrevoApiInstance();
+		const apiInstance = await getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de confirmation envoyé avec succès:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -169,7 +175,7 @@ export async function sendOrderConfirmationEmail(
 
 // Fonction pour envoyer un email de bienvenue
 export async function sendWelcomeEmail(email: string, customerName: string) {
-	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+	const sendSmtpEmail = await createSendSmtpEmail();
 
 	sendSmtpEmail.to = [{ email }];
 	sendSmtpEmail.subject = "Bienvenue chez Lady Haya Wear !";
@@ -190,7 +196,7 @@ export async function sendWelcomeEmail(email: string, customerName: string) {
 	};
 
 	try {
-		const apiInstance = getBrevoApiInstance();
+		const apiInstance = await getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de bienvenue envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -205,7 +211,7 @@ export async function sendPasswordResetEmail(
 	email: string,
 	resetToken: string
 ) {
-	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+	const sendSmtpEmail = await createSendSmtpEmail();
 
 	sendSmtpEmail.to = [{ email }];
 	sendSmtpEmail.subject =
@@ -231,7 +237,7 @@ export async function sendPasswordResetEmail(
 	};
 
 	try {
-		const apiInstance = getBrevoApiInstance();
+		const apiInstance = await getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de récupération envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -243,7 +249,7 @@ export async function sendPasswordResetEmail(
 
 // Fonction générique pour envoyer un email personnalisé
 export async function sendCustomEmail(emailData: EmailData) {
-	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+	const sendSmtpEmail = await createSendSmtpEmail();
 
 	sendSmtpEmail.to = [{ email: emailData.to }];
 	sendSmtpEmail.subject = emailData.subject;
@@ -258,7 +264,7 @@ export async function sendCustomEmail(emailData: EmailData) {
 	};
 
 	try {
-		const apiInstance = getBrevoApiInstance();
+		const apiInstance = await getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email personnalisé envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -274,7 +280,7 @@ export async function sendContactEmail(contactData: {
 	email: string;
 	message: string;
 }) {
-	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+	const sendSmtpEmail = await createSendSmtpEmail();
 
 	sendSmtpEmail.to = [
 		{ email: process.env.BREVO_TO_EMAIL || "contact@ladyhaya-wear.fr" },
@@ -299,7 +305,7 @@ export async function sendContactEmail(contactData: {
 	};
 
 	try {
-		const apiInstance = getBrevoApiInstance();
+		const apiInstance = await getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de contact envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };
@@ -314,7 +320,7 @@ export async function sendOrderStatusUpdateEmail(
 	email: string,
 	orderData: OrderStatusUpdateData
 ) {
-	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+	const sendSmtpEmail = await createSendSmtpEmail();
 
 	// Déterminer le sujet et le contenu selon le statut
 	let subject = "";
@@ -506,7 +512,7 @@ export async function sendOrderStatusUpdateEmail(
 	};
 
 	try {
-		const apiInstance = getBrevoApiInstance();
+		const apiInstance = await getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log(
 			`Email de mise à jour de statut (${orderData.status}) envoyé:`,
@@ -537,7 +543,7 @@ export async function sendReviewRequestEmail(
 		reviewToken: string;
 	}
 ) {
-	const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+	const sendSmtpEmail = await createSendSmtpEmail();
 
 	sendSmtpEmail.to = [{ email }];
 	sendSmtpEmail.subject = `Votre avis nous intéresse ! Commande #${reviewData.orderNumber} - Lady Haya Wear`;
@@ -620,7 +626,7 @@ export async function sendReviewRequestEmail(
 	};
 
 	try {
-		const apiInstance = getBrevoApiInstance();
+		const apiInstance = await getBrevoApiInstance();
 		const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
 		console.log("Email de demande d'avis envoyé:", response);
 		return { success: true, messageId: response.body?.messageId || "sent" };

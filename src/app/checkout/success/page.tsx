@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { FiCheckCircle } from "react-icons/fi";
 import Loader from "@/components/Loader";
 import { useCartStore } from "@/stores/cartStore";
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
 	const searchParams = useSearchParams();
 	const sessionId = searchParams.get("session_id");
 	const [orderData, setOrderData] = useState<any>(null);
@@ -161,6 +161,14 @@ export default function CheckoutSuccessPage() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export default function CheckoutSuccessPage() {
+	return (
+		<Suspense fallback={<Loader />}>
+			<SuccessContent />
+		</Suspense>
 	);
 }
 
