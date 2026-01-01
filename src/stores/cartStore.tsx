@@ -74,7 +74,7 @@ export const useCartStore = create<CartState>()(
       cartItems: [],
       isLoading: false,
       syncTimeout: null,
-      optimisticUpdates: [],
+      optimisticUpdates: [] as string[],
 
       addOptimisticUpdate: (itemId) => {
         set((state) => ({
@@ -342,6 +342,14 @@ export const useCartStore = create<CartState>()(
     {
       name: 'cart-storage',
       storage: createJSONStorage(() => localStorage),
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        // Migration pour nettoyer optimisticUpdates si c'est un Set
+        if (persistedState?.optimisticUpdates && !Array.isArray(persistedState.optimisticUpdates)) {
+          persistedState.optimisticUpdates = [];
+        }
+        return persistedState;
+      },
     }
   )
 );

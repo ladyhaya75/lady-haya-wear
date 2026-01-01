@@ -45,7 +45,7 @@ export const useFavoritesStore = create<FavoritesState>()(
     (set, get) => ({
       favorites: [],
       isLoading: false,
-      optimisticUpdates: [],
+      optimisticUpdates: [] as string[],
 
       addOptimisticUpdate: (productId) => {
         set((state) => ({
@@ -268,6 +268,14 @@ export const useFavoritesStore = create<FavoritesState>()(
     {
       name: 'favorites-storage',
       storage: createJSONStorage(() => localStorage),
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        // Migration pour nettoyer optimisticUpdates si c'est un Set
+        if (persistedState?.optimisticUpdates && !Array.isArray(persistedState.optimisticUpdates)) {
+          persistedState.optimisticUpdates = [];
+        }
+        return persistedState;
+      },
     }
   )
 );

@@ -28,6 +28,7 @@ export default function NavbarIcons() {
 	const router = useRouter();
 	const favorites = useFavoritesStore((state) => state.favorites);
 	const getCartCount = useCartStore((state) => state.getCartCount);
+	const [mounted, setMounted] = useState(false);
 	const { user, loading, logout } = useAuthStore();
 	const profileModalRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +38,11 @@ export default function NavbarIcons() {
 
 	// Bloquer le scroll quand une modale est ouverte
 	useScrollLock(isCartOpen || isFavOpen);
+
+	// Fix hydration - mount on client only
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	// Vérifier si l'utilisateur est connecté
 	const isLoggedIn = !!user;
@@ -206,7 +212,7 @@ export default function NavbarIcons() {
 						setIsCartOpen((prev) => !prev);
 					}}
 				/>
-				{getCartCount() > 0 && (
+				{mounted && getCartCount() > 0 && (
 					<motion.div
 						className="absolute -top-4 -right-4 w-6 h-6 bg-red-400 rounded-full text-white text-sm flex items-center justify-center mr-2 md:mr-0"
 						initial={{ scale: 0 }}

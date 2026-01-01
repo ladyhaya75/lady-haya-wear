@@ -40,14 +40,21 @@ export async function POST(req: NextRequest) {
 			const metadata = session.metadata!;
 			const cartItems = JSON.parse(metadata.cartItems);
 
+			// Récupérer les informations client depuis la session Stripe
+			const customerEmail = session.customer_details?.email || session.customer_email || "";
+			const customerName = session.customer_details?.name || "Client";
+
 			// Créer la commande dans la base de données
 			const order = await prisma.order.create({
 				data: {
 					userId: metadata.userId,
 					orderNumber: `LHW-${Date.now()}`,
-					addressId: metadata.selectedAddressId,
-					deliveryMethod: metadata.selectedDelivery,
+					customerEmail: customerEmail,
+					customerName: customerName,
+					shippingAddressId: metadata.selectedAddressId,
+					carrier: metadata.selectedDelivery, // Stocker la méthode de livraison
 					paymentMethod: "stripe",
+					paymentStatus: "PAID",
 					promoCodeId: metadata.promoCodeId || null,
 					promoDiscount: parseFloat(metadata.promoDiscount) || 0,
 					subtotal: session.amount_subtotal! / 100,
@@ -61,12 +68,12 @@ export async function POST(req: NextRequest) {
 					items: {
 						create: cartItems.map((item: any) => ({
 							productId: item.productId,
-							name: item.name,
-							image: item.image,
-							price: item.price,
+							productName: item.name,
+							colorName: item.color,
+							sizeName: item.size,
 							quantity: item.quantity,
-							color: item.color,
-							size: item.size,
+							unitPrice: item.price,
+							totalPrice: item.price * item.quantity,
 						})),
 					},
 				},
