@@ -46,7 +46,7 @@ export default function CartPage() {
 		<div className="min-h-screen bg-beige-light">
 			{/* Header */}
 			<header className="bg-nude-light border-b border-gray-200">
-				<div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-6">
+				<div className="px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-4 sm:py-6">
 					<div className="flex items-center gap-4">
 						<Link
 							href="/"
@@ -63,7 +63,7 @@ export default function CartPage() {
 			</header>
 
 			{/* Contenu principal */}
-			<main className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12">
+			<main className="px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-6 sm:py-12">
 				{!cartItems || cartItems.length === 0 ? (
 					/* Panier vide */
 					<div className="text-center py-16">
@@ -95,20 +95,20 @@ export default function CartPage() {
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-12  lg:mt-10">
 						{/* Liste des articles */}
 						<div className="lg:col-span-2">
-							<div className="bg-nude-light rounded-2xl shadow-lg p-6">
+							<div className="bg-nude-light rounded-2xl shadow-lg p-3 sm:p-6">
 								<h2 className="text-2xl font-semibold text-nude-dark mb-6">
 									Articles ({cartItems.length})
 								</h2>
 
-								<div className="space-y-4 sm:space-y-6">
+								<div className="space-y-3 sm:space-y-6">
 									{cartItems.map((item) => (
 										<div
 											key={item.id}
-											className="flex flex-col sm:flex-row gap-4 p-4 bg-nude-light/30 rounded-xl"
+											className="flex flex-row gap-2 sm:gap-4 p-2 sm:p-4 bg-nude-light/30 rounded-xl"
 										>
-											{/* Image et bouton supprimer */}
-											<div className="flex items-start justify-between sm:flex-col sm:items-start">
-												<div className="relative w-20 h-24 sm:w-24 sm:h-32 flex-shrink-0">
+											{/* Colonne 1: Image + Quantité */}
+											<div className="flex flex-col gap-1.5 sm:gap-2">
+												<div className="relative w-18 h-26 sm:w-24 sm:h-32 flex-shrink-0">
 													<Image
 														src={item.image}
 														alt={item.imageAlt || item.name}
@@ -116,104 +116,80 @@ export default function CartPage() {
 														className="object-cover rounded-lg"
 													/>
 												</div>
-
-												{/* Bouton supprimer - mobile */}
-												<button
-													onClick={() => removeFromCart(item.id)}
-													className="flex items-center gap-1 text-red-400 hover:text-red-600 transition-colors cursor-pointer sm:hidden"
-												>
-													<FiTrash2 className="w-3 h-3" />
-													<span className="text-xs">Supprimer</span>
-												</button>
+												{/* Quantité sous l'image */}
+												<div className="flex items-center gap-1 sm:gap-1.5 justify-center mt-2">
+													<button
+														onClick={() =>
+															updateQuantity(item.id, item.quantity - 1)
+														}
+														disabled={item.quantity <= 1}
+														className="w-5 h-5 sm:w-7 sm:h-7 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-xs"
+													>
+														−
+													</button>
+													<span className="text-xs sm:text-base font-medium text-nude-dark min-w-[14px] sm:min-w-[20px] text-center">
+														{item.quantity}
+													</span>
+													<button
+														onClick={() =>
+															updateQuantity(item.id, item.quantity + 1)
+														}
+														disabled={item.quantity >= getAvailableStock(item)}
+														className="w-5 h-5 sm:w-7 sm:h-7 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-xs"
+													>
+														+
+													</button>
+												</div>
 											</div>
 
-											{/* Informations */}
-											<div className="flex-1 flex flex-col justify-between">
-												<div>
-													{/* Nom et prix */}
-													<div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
-														<h3 className="font-semibold text-base sm:text-lg text-nude-dark">
+											{/* Colonne 2: Informations produit */}
+											<div className="flex-1 flex flex-col justify-between min-w-0">
+												{/* Nom, détails et prix */}
+												<div className="flex justify-between items-start gap-1.5 sm:gap-2">
+													<div className="flex-1 min-w-0">
+														<h3 className="font-semibold font-balqis text-lg md:text-xl text-nude-dark line-clamp-2">
 															{item.name}
 														</h3>
-														<div className="text-left sm:text-right">
-															<div className="flex items-center gap-2 justify-start sm:justify-end flex-wrap">
-																{item.promoPercentage ? (
-																	<>
-																		<p className="text-lg sm:text-xl font-semibold text-logo">
-																			{item.price.toFixed(2)}€
-																		</p>
-																		<p className="text-sm text-gray-400 line-through">
-																			{item.originalPrice?.toFixed(2)}€
-																		</p>
-																		<span className="bg-orange-400 text-white text-xs px-2 py-1 rounded-md">
-																			-{item.promoPercentage}%
-																		</span>
-																	</>
-																) : (
-																	<p className="text-lg sm:text-xl font-semibold text-logo">
-																		{item.price.toFixed(2)}€
-																	</p>
-																)}
+														{/* Détails couleur et taille directement sous le nom */}
+														<div className="flex items-center gap-1.5 text-xs text-gray-500 mt-2">
+															<div className="flex items-center gap-1">
+																<div
+																	className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-gray-500"
+																	style={{ backgroundColor: item.colorHex }}
+																/>
+																<span className="truncate">{item.color}</span>
 															</div>
-														</div>
-													</div>
-
-													{/* Détails couleur et taille */}
-													<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4">
-														<div className="flex items-center gap-2">
-															<div
-																className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-300"
-																style={{ backgroundColor: item.colorHex }}
-															/>
-															<span className="text-xs sm:text-sm text-gray-600">
-																{item.color}
+															<span className="text-gray-500">•</span>
+															<span className="whitespace-nowrap">
+																T. {item.size}
 															</span>
 														</div>
-														<span className="hidden sm:inline text-gray-400">
-															•
-														</span>
-														<span className="text-xs sm:text-sm text-gray-600">
-															Taille {item.size}
-														</span>
+													</div>
+													<div className="flex flex-col items-end gap-0.5 sm:gap-1 flex-shrink-0">
+														<p className="text-base sm:text-xl font-semibold text-logo whitespace-nowrap">
+															{item.price.toFixed(2)}€
+														</p>
+														{item.promoPercentage && item.originalPrice && (
+															<div className="flex items-center gap-1 sm:gap-1.5">
+																<p className="text-xs sm:text-sm text-gray-400 line-through whitespace-nowrap">
+																	{item.originalPrice.toFixed(2)}€
+																</p>
+																<span className="bg-orange-400 text-white text-xs px-1 sm:px-2 py-0.5 sm:py-1 rounded-md whitespace-nowrap">
+																	-{item.promoPercentage}%
+																</span>
+															</div>
+														)}
 													</div>
 												</div>
 
-												{/* Actions */}
-												<div className="flex items-center justify-between">
-													{/* Quantité */}
-													<div className="flex items-center gap-2 sm:gap-3">
-														<button
-															onClick={() =>
-																updateQuantity(item.id, item.quantity - 1)
-															}
-															disabled={item.quantity <= 1}
-															className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
-														>
-															−
-														</button>
-														<span className="text-base sm:text-lg font-medium text-nude-dark min-w-[20px] sm:min-w-[30px] text-center">
-															{item.quantity}
-														</span>
-														<button
-															onClick={() =>
-																updateQuantity(item.id, item.quantity + 1)
-															}
-															disabled={
-																item.quantity >= getAvailableStock(item)
-															}
-															className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ring-2 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
-														>
-															+
-														</button>
-													</div>
-
-													{/* Supprimer - desktop */}
+												{/* Bouton supprimer aligné en bas */}
+												<div className="flex justify-end">
 													<button
 														onClick={() => removeFromCart(item.id)}
-														className="hidden sm:flex items-center gap-2 text-red-400 hover:text-red-600 transition-colors cursor-pointer"
+														className="flex items-center gap-1.5 text-red-400 hover:text-red-600 transition-colors cursor-pointer text-sm"
 													>
 														<FiTrash2 className="w-4 h-4" />
-														<span className="text-sm">Supprimer</span>
+														<span className=" sm:inline">Supprimer</span>
 													</button>
 												</div>
 											</div>
