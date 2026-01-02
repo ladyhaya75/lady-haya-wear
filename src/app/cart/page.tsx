@@ -101,10 +101,14 @@ export default function CartPage() {
 								</h2>
 
 								<div className="space-y-3 sm:space-y-6">
-									{cartItems.map((item) => (
+									{cartItems.map((item, index) => (
 										<div
 											key={item.id}
-											className="flex flex-row gap-2 sm:gap-4 p-2 sm:p-4 bg-nude-light/30 rounded-xl"
+											className={`flex flex-row gap-2 sm:gap-4 p-2 sm:p-4 bg-nude-light/30 rounded-xl ${
+												index < cartItems.length - 1
+													? "pb-4 sm:pb-6 border-b border-gray-300"
+													: ""
+											}`}
 										>
 											{/* Colonne 1: Image + Quantité */}
 											<div className="flex flex-col gap-1.5 sm:gap-2">
@@ -198,7 +202,7 @@ export default function CartPage() {
 								</div>
 
 								{/* Actions du panier */}
-								<div className="border-t border-gray-200 pt-6 mt-6">
+								<div className="border-t border-gray-300 pt-6 mt-6">
 									<div className="flex justify-between items-center">
 										<button
 											onClick={clearCart}
@@ -252,7 +256,7 @@ export default function CartPage() {
 											la livraison gratuite !
 										</div>
 									)}
-									<div className="border-t border-gray-200 pt-4">
+									<div className="border-t border-gray-300 pt-4">
 										<div className="flex justify-between text-xl font-semibold text-logo">
 											<span>Total TTC</span>
 											<span>{totalTTC.toFixed(2)}€</span>
