@@ -788,7 +788,7 @@ export default function CheckoutPage() {
 								)}
 
 								{/* Code promo */}
-								<div className="border-t border-gray-200 pt-4">
+								<div className="border-t border-gray-300 pt-4">
 									<div className="flex items-center gap-2 mb-2">
 										<span className="text-gray-600 text-sm">Code promo</span>
 										<span className="text-xs text-gray-400">(optionnel)</span>
@@ -885,7 +885,7 @@ export default function CheckoutPage() {
 							</div>
 
 							{/* Newsletter subscription */}
-							<div className="border-t border-gray-200 pt-4 mb-4">
+							<div className="border-t border-gray-300 pt-4 mb-4">
 								<label className="flex items-start gap-3 cursor-pointer">
 									<input
 										type="checkbox"
