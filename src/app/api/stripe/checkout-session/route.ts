@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
 				promoCodeId: promoCodeId || "",
 				promoDiscount: promoDiscount.toString(),
 				subscribeNewsletter: subscribeNewsletter.toString(),
-				cartItems: JSON.stringify(cartItems),
+				// Ne pas envoyer cartItems (trop volumineux), on les récupérera depuis la BDD via userId
 			},
 			// Appliquer la réduction promo si applicable
 			...(promoDiscount > 0 && {

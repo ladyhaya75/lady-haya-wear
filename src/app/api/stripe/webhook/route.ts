@@ -42,7 +42,6 @@ export async function POST(req: NextRequest) {
 
 		try {
 			const metadata = session.metadata!;
-			const cartItems = JSON.parse(metadata.cartItems);
 
 			// Récupérer les informations client depuis la BDD (pas depuis Stripe)
 			const user = await prisma.user.findUnique({
@@ -53,6 +52,27 @@ export async function POST(req: NextRequest) {
 			if (!user) {
 				throw new Error("Utilisateur non trouvé");
 			}
+
+			// Récupérer les items du panier depuis la BDD
+			const cartItemsFromDB = await prisma.cartItem.findMany({
+				where: { userId: metadata.userId },
+			});
+
+			if (!cartItemsFromDB || cartItemsFromDB.length === 0) {
+				throw new Error("Panier vide");
+			}
+
+			// Transformer les items en format attendu
+			// Note: Le nom du produit sera "Produit" par défaut car on ne le stocke pas en BDD
+			// Les line_items de Stripe contiennent déjà les vrais noms pour l'affichage
+			const cartItems = cartItemsFromDB.map((item) => ({
+				productId: item.productId,
+				name: `Produit ${item.productId.slice(0, 8)}`, // Nom générique
+				color: item.colorName,
+				size: item.sizeName,
+				quantity: item.quantity,
+				price: item.price,
+			}));
 
 			// Utiliser les infos du compte utilisateur, pas celles de la carte
 			const customerEmail = user.email;
