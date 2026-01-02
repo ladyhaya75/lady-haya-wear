@@ -52,7 +52,7 @@ const CartItem = memo(function CartItem({
 					className="object-cover rounded-lg w-16 h-22 sm:w-20 sm:h-24"
 				/>
 				{/* Quantité sous l'image */}
-				<div className="flex items-center gap-2 sm:gap-1 justify-center mt-1">
+				<div className="flex items-center gap-2 justify-center mt-1">
 					<OptimisticCartButton
 						itemId={item.id}
 						onClick={handleDecrement}
