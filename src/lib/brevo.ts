@@ -6,10 +6,10 @@ async function getBrevoApiInstance() {
 		// Import dynamique pour éviter l'initialisation au build
 		const SibApiV3Sdk = await import("@getbrevo/brevo");
 		apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-		apiInstance.setApiKey(
-			SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
-			process.env.BREVO_API_KEY || ""
-		);
+apiInstance.setApiKey(
+	SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
+	process.env.BREVO_API_KEY || ""
+);
 	}
 	return apiInstance;
 }

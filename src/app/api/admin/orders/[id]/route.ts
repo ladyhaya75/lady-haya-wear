@@ -173,12 +173,12 @@ export async function PUT(
 					trackingNumber: trackingNumber,
 					carrier: carrier,
 					trackingUrl: trackingUrl,
-			};
+				};
 
 			const { sendOrderStatusUpdateEmail } = await import("@/lib/brevo");
-			await sendOrderStatusUpdateEmail(order.customerEmail, orderData);
-			console.log(
-				`Email de mise à jour de statut envoyé pour la commande #${order.orderNumber}`
+				await sendOrderStatusUpdateEmail(order.customerEmail, orderData);
+				console.log(
+					`Email de mise à jour de statut envoyé pour la commande #${order.orderNumber}`
 				);
 			} catch (error) {
 				console.error(

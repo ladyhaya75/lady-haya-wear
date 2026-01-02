@@ -53,26 +53,38 @@ export async function POST(req: NextRequest) {
 				throw new Error("Utilisateur non trouvé");
 			}
 
-			// Récupérer les items du panier depuis la BDD
+			// Récupérer les line_items depuis Stripe pour avoir les vrais noms des produits
+			const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+				limit: 100,
+			});
+
+			// Récupérer les items du panier depuis la BDD pour avoir les productId
 			const cartItemsFromDB = await prisma.cartItem.findMany({
 				where: { userId: metadata.userId },
+				orderBy: { createdAt: 'asc' }, // Important pour maintenir l'ordre
 			});
 
 			if (!cartItemsFromDB || cartItemsFromDB.length === 0) {
 				throw new Error("Panier vide");
 			}
 
-			// Transformer les items en format attendu
-			// Note: Le nom du produit sera "Produit" par défaut car on ne le stocke pas en BDD
-			// Les line_items de Stripe contiennent déjà les vrais noms pour l'affichage
-			const cartItems = cartItemsFromDB.map((item) => ({
-				productId: item.productId,
-				name: `Produit ${item.productId.slice(0, 8)}`, // Nom générique
-				color: item.colorName,
-				size: item.sizeName,
-				quantity: item.quantity,
-				price: item.price,
-			}));
+			// Filtrer les line_items pour exclure les frais de livraison
+			const productLineItems = lineItems.data.filter(
+				(lineItem) => !lineItem.description?.toLowerCase().includes('livraison')
+			);
+
+			// Combiner les données : noms depuis Stripe + productId depuis BDD
+			const cartItems = cartItemsFromDB.map((item, index) => {
+				const lineItem = productLineItems[index];
+				return {
+					productId: item.productId,
+					name: lineItem?.description || 'Produit', // Nom depuis Stripe
+					color: item.colorName,
+					size: item.sizeName,
+					quantity: item.quantity,
+					price: item.price,
+				};
+			});
 
 			// Utiliser les infos du compte utilisateur, pas celles de la carte
 			const customerEmail = user.email;
@@ -118,6 +130,11 @@ export async function POST(req: NextRequest) {
 					shippingAddress: true,
 					billingAddress: true,
 				},
+			});
+
+			// Vider le panier après la création de la commande
+			await prisma.cartItem.deleteMany({
+				where: { userId: metadata.userId },
 			});
 
 			// Gérer l'inscription à la newsletter si demandée

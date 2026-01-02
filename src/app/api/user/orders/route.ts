@@ -131,12 +131,12 @@ export async function GET(request: NextRequest) {
 				order.status === "REFUNDED"
 		);
 
-	return NextResponse.json({
+		return NextResponse.json({
 		orders: formattedOrders, // Pour le hook useOrders
-		currentOrders,
-		historicalOrders,
-		total: formattedOrders.length,
-	});
+			currentOrders,
+			historicalOrders,
+			total: formattedOrders.length,
+		});
 	} catch (error) {
 		console.error("Erreur lors de la récupération des commandes:", error);
 		return NextResponse.json(
