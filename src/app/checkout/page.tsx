@@ -876,7 +876,7 @@ export default function CheckoutPage() {
 										livraison gratuite !
 									</div>
 								)}
-								<div className="border-t border-gray-200 pt-4">
+								<div className="border-t border-gray-300 pt-4">
 									<div className="flex justify-between text-xl font-semibold text-logo">
 										<span>Total TTC</span>
 										<span>{totalTTC.toFixed(2)}€</span>
