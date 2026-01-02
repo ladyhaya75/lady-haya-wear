@@ -89,7 +89,7 @@ export default function CartModal({ onClose }: CartModalProps) {
 				</div>
 			) : (
 				<>
-					<h2 className="text-2xl text-logo font-semibold">Panier</h2>
+					<h2 className="text-4xl font-alex-brush text-logo">Panier</h2>
 					<div className="flex flex-col gap-4">
 						{/* ITEMS */}
 						{cartItems.map((item) => (

@@ -49,26 +49,26 @@ const CartItem = memo(function CartItem({
 					alt={item.imageAlt || item.name}
 					width={56}
 					height={70}
-					className="object-cover rounded-lg w-14 h-[70px] sm:w-20 sm:h-24"
+					className="object-cover rounded-lg w-16 h-22 sm:w-20 sm:h-24"
 				/>
 				{/* Quantité sous l'image */}
-				<div className="flex items-center gap-0.5 sm:gap-1 justify-center">
+				<div className="flex items-center gap-2 sm:gap-1 justify-center mt-1">
 					<OptimisticCartButton
 						itemId={item.id}
 						onClick={handleDecrement}
 						disabled={item.quantity <= 1 || isOptimistic}
-						className="w-4 h-4 sm:w-5 sm:h-5 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-[10px] sm:text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+						className="w-5 h-5 sm:w-5 sm:h-5 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-[10px] sm:text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						−
 					</OptimisticCartButton>
-					<span className="text-[10px] sm:text-xs font-medium text-nude-dark min-w-[12px] sm:min-w-[16px] text-center">
+					<span className="sm:text-xs font-medium text-nude-dark text-center">
 						{item.quantity}
 					</span>
 					<OptimisticCartButton
 						itemId={item.id}
 						onClick={handleIncrement}
 						disabled={item.quantity >= item.maxQuantity || isOptimistic}
-						className="w-4 h-4 sm:w-5 sm:h-5 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-[10px] sm:text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+						className="w-5 h-5 sm:w-5 sm:h-5 rounded-full ring-1 ring-nude-dark text-nude-dark hover:ring-rose-dark-2 hover:bg-rose-light hover:text-rose-dark-2 flex items-center justify-center transition-all duration-300 text-[10px] sm:text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						+
 					</OptimisticCartButton>
@@ -81,14 +81,14 @@ const CartItem = memo(function CartItem({
 				<div className="flex items-start justify-between gap-1.5">
 					<div className="flex-1 min-w-0">
 						{/* TITLE */}
-						<h3 className="font-semibold text-xs sm:text-sm text-nude-dark line-clamp-2">
+						<h3 className="font-semibold text-base font-balqis text-nude-dark line-clamp-2">
 							{item.name}
 						</h3>
 						{/* DESC directement sous le titre */}
-						<div className="text-[10px] sm:text-xs text-gray-600 mt-0.5">
+						<div className="text-xs text-gray-500 mt-0.5">
 							<div className="flex items-center gap-1">
 								<div
-									className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border border-gray-300"
+									className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border border-gray-500"
 									style={{ backgroundColor: item.colorHex }}
 								/>
 								<span className="truncate">{item.color}</span>
@@ -98,8 +98,8 @@ const CartItem = memo(function CartItem({
 						</div>
 					</div>
 					{/* PRICE + BADGE */}
-					<div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-						<div className="text-xs sm:text-sm font-semibold text-logo whitespace-nowrap">
+					<div className="flex flex-col items-end gap-1 flex-shrink-0">
+						<div className="text-sm font-semibold text-logo whitespace-nowrap">
 							{item.price.toFixed(2)}€
 						</div>
 						{item.promoPercentage && item.originalPrice && (
@@ -123,7 +123,7 @@ const CartItem = memo(function CartItem({
 						disabled={isOptimistic}
 						className="p-0.5 sm:p-1 text-red-400 hover:text-red-600 transition-colors cursor-pointer"
 					>
-						<FiTrash2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+						<FiTrash2 className=" sm:text-lg" />
 					</OptimisticCartButton>
 				</div>
 			</div>
