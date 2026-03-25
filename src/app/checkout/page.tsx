@@ -4,7 +4,7 @@ import Loader from "@/components/Loader";
 import { useCartStore } from "@/stores/cartStore";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { FaCcMastercard, FaCcPaypal, FaCcVisa, FaLock } from "react-icons/fa";
 import { FiArrowLeft, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -16,7 +16,7 @@ const fakeUser = {
 	adresse: "123 rue de Paris, 75001 Paris",
 };
 
-export default function CheckoutPage() {
+function CheckoutContent() {
 	const cartItems = useCartStore((state) => state.cartItems);
 	const getCartTotal = useCartStore((state) => state.getCartTotal);
 	const clearCart = useCartStore((state) => state.clearCart);
@@ -1201,5 +1201,13 @@ export default function CheckoutPage() {
 				</div>
 			</main>
 		</div>
+	);
+}
+
+export default function CheckoutPage() {
+	return (
+		<Suspense fallback={<Loader />}>
+			<CheckoutContent />
+		</Suspense>
 	);
 }
