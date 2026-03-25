@@ -3,7 +3,7 @@
 import Loader from "@/components/Loader";
 import { useCartStore } from "@/stores/cartStore";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaCcMastercard, FaCcPaypal, FaCcVisa, FaLock } from "react-icons/fa";
 import { FiArrowLeft, FiChevronDown, FiChevronUp } from "react-icons/fi";
@@ -28,6 +28,7 @@ export default function CheckoutPage() {
 	const [address, setAddress] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const [modalForm, setModalForm] = useState({
 		nom: address?.lastName || address?.nom || "",
 		prenom: address?.firstName || address?.prenom || "",
@@ -86,6 +87,24 @@ export default function CheckoutPage() {
 		}
 		fetchUserAndAddress();
 	}, [router]);
+
+	// Nettoyage commande PayPal abandonnée
+	// PayPal redirige vers /checkout?paypal=cancelled&orderId=xxx quand l'user annule
+	useEffect(() => {
+		const isCancelled = searchParams.get("paypal") === "cancelled";
+		const orderId = searchParams.get("orderId");
+
+		if (isCancelled && orderId) {
+			fetch(`/api/paypal/cancel-order?orderId=${orderId}`, {
+				method: "DELETE",
+			}).catch(() => {});
+
+			toast.info("Paiement PayPal annulé. Votre panier est conservé.");
+
+			// Nettoyer l'URL pour éviter de re-déclencher si la page est rechargée
+			router.replace("/checkout");
+		}
+	}, [searchParams, router]);
 
 	useEffect(() => {
 		async function fetchAddresses() {
@@ -696,7 +715,7 @@ export default function CheckoutPage() {
 									</label>
 									{selectedPayment === "paypal" && (
 										<div className="ml-6 mt-2 text-xs text-blue-600">
-											Redirection vers Paypal à la validation…
+											Vous serez redirigée vers PayPal pour finaliser le paiement en toute sécurité.
 										</div>
 									)}
 								</div>
@@ -717,11 +736,18 @@ export default function CheckoutPage() {
 											key={item.id}
 											className="flex items-center gap-3 border-b pb-2 last:border-b-0 last:pb-0"
 										>
-											<img
-												src={item.image}
-												alt={item.name}
-												className="w-12 h-12 object-cover rounded"
-											/>
+											{item.image ? (
+												<img
+													src={item.image}
+													alt={item.name}
+													className="w-12 h-12 object-cover rounded bg-nude-light"
+													onError={(e) => { e.currentTarget.style.display = "none"; }}
+												/>
+											) : (
+												<div className="w-12 h-12 rounded bg-nude-light flex items-center justify-center shrink-0">
+													<span className="text-gray-400 text-xs">img</span>
+												</div>
+											)}
 											<div className="flex-1">
 												<div className="text-base font-medium">{item.name}</div>
 												<div className="text-sm text-gray-500">
@@ -983,6 +1009,41 @@ export default function CheckoutPage() {
 													toast.error(
 														data.error ||
 															"Erreur lors de la création de la session de paiement"
+													);
+													setLoading(false);
+												}
+												return;
+											}
+
+											// ===== PAIEMENT PAYPAL =====
+											if (selectedPayment === "paypal") {
+												const paypalOrderData = {
+													cartItems,
+													selectedAddressId,
+													selectedDelivery,
+													promoCodeId: appliedPromoCode?.id || null,
+													promoDiscount,
+													subtotal: subtotalHT,
+													shippingCost: livraison,
+													taxAmount: tva,
+													total: totalTTC,
+													subscribeNewsletter,
+												};
+
+												const res = await fetch("/api/paypal/create-order", {
+													method: "POST",
+													headers: { "Content-Type": "application/json" },
+													body: JSON.stringify(paypalOrderData),
+												});
+
+												const data = await res.json();
+
+												if (res.ok && data.approvalUrl) {
+													window.location.href = data.approvalUrl;
+												} else {
+													toast.error(
+														data.error ||
+															"Erreur lors de la création de la commande PayPal"
 													);
 													setLoading(false);
 												}

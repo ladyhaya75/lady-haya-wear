@@ -12,9 +12,12 @@ export async function getProductDetails(productId: string) {
         promoPercentage,
         "image": mainImage.asset->url,
         "imageAlt": mainImage.alt,
-        "hoverImage": hoverImage.asset->url,
-        "hoverImageAlt": hoverImage.alt,
         "slug": slug.current,
+        "colors": colors[] {
+          name,
+          "mainImage": mainImage.asset->url,
+          "mainImageAlt": mainImage.alt
+        },
         category->{
           _id,
           name,
@@ -39,10 +42,18 @@ export async function enrichCartItems(dbItems: any[]) {
 		const productDetails = await getProductDetails(dbItem.productId);
 
 		if (productDetails) {
-			// Si le produit a un promoPercentage, originalPrice est le prix de base
-			const originalPrice = productDetails.promoPercentage 
-				? productDetails.price 
+			const originalPrice = productDetails.promoPercentage
+				? productDetails.price
 				: undefined;
+
+			// Chercher l'image de la couleur spécifique de l'article
+			const colorData = productDetails.colors?.find(
+				(c: { name: string; mainImage: string; mainImageAlt: string }) =>
+					c.name === dbItem.colorName
+			);
+			// Fallback sur l'image principale du produit si la couleur n'a pas d'image
+			const image = colorData?.mainImage || productDetails.image || null;
+			const imageAlt = colorData?.mainImageAlt || productDetails.imageAlt || "";
 
 			enrichedItems.push({
 				id: `${dbItem.productId}-${dbItem.colorName}-${dbItem.sizeName}`,
@@ -51,13 +62,13 @@ export async function enrichCartItems(dbItems: any[]) {
 				price: dbItem.price,
 				originalPrice: originalPrice,
 				promoPercentage: productDetails.promoPercentage,
-				image: productDetails.image,
-				imageAlt: productDetails.imageAlt,
+				image,
+				imageAlt,
 				color: dbItem.colorName || "",
-				colorHex: "", // Cette info n'est pas disponible en base
+				colorHex: "",
 				size: dbItem.sizeName || "",
 				quantity: dbItem.quantity,
-				maxQuantity: 10, // Valeur par défaut
+				maxQuantity: 10,
 				slug: productDetails.slug,
 			});
 		}

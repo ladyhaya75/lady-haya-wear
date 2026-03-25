@@ -10,11 +10,25 @@ import { useCartStore } from "@/stores/cartStore";
 function SuccessContent() {
 	const searchParams = useSearchParams();
 	const sessionId = searchParams.get("session_id");
+
+	// Paramètres PayPal (passés dans l'URL après capture)
+	const isPaypal = searchParams.get("paypal") === "true";
+	const paypalOrderNumber = searchParams.get("orderNumber");
+	const paypalAmount = searchParams.get("amount");
+	const paypalEmail = searchParams.get("email");
+
 	const [orderData, setOrderData] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 	const clearCart = useCartStore((state) => state.clearCart);
 
 	useEffect(() => {
+		// Cas PayPal : les données sont dans l'URL, pas besoin de fetch
+		if (isPaypal) {
+			clearCart();
+			setLoading(false);
+			return;
+		}
+
 		if (sessionId) {
 			// Vider le panier après un paiement réussi
 			clearCart();
@@ -33,10 +47,101 @@ function SuccessContent() {
 		} else {
 			setLoading(false);
 		}
-	}, [sessionId, clearCart]);
+	}, [sessionId, isPaypal, clearCart]);
 
 	if (loading) return <Loader />;
 
+	// ===== CAS PAYPAL =====
+	if (isPaypal && paypalOrderNumber) {
+		return (
+			<div className="min-h-screen bg-beige-light">
+				<div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-48 py-12">
+					<div className="max-w-3xl mx-auto">
+						<div className="bg-nude-light rounded-2xl shadow-lg p-8 mb-8 text-center">
+							<div className="flex justify-center mb-6">
+								<FiCheckCircle className="w-24 h-24 text-green-500" />
+							</div>
+							<h1 className="text-4xl lg:text-5xl font-alex-brush text-logo mb-4">
+								Commande confirmée !
+							</h1>
+							<p className="text-xl text-nude-dark mb-2">
+								Merci pour votre achat 🎉
+							</p>
+							<p className="text-lg text-gray-600">
+								Numéro de commande:{" "}
+								<span className="font-semibold text-logo">
+									{paypalOrderNumber}
+								</span>
+							</p>
+						</div>
+
+						<div className="bg-nude-light rounded-2xl shadow-lg p-8 mb-8">
+							<h2 className="text-2xl font-semibold text-nude-dark mb-6">
+								Détails de votre commande
+							</h2>
+							<div className="space-y-4">
+								<div className="flex justify-between text-gray-600">
+									<span>Email de confirmation envoyé à:</span>
+									<span className="font-medium">{decodeURIComponent(paypalEmail || "")}</span>
+								</div>
+								<div className="flex justify-between text-gray-600">
+									<span>Montant total:</span>
+									<span className="font-semibold text-logo text-xl">
+										{parseFloat(paypalAmount || "0").toFixed(2)} €
+									</span>
+								</div>
+								<div className="flex justify-between text-gray-600">
+									<span>Mode de paiement:</span>
+									<span className="font-medium">PayPal</span>
+								</div>
+							</div>
+						</div>
+
+						<div className="bg-rose-light-2 rounded-2xl shadow-lg border border-nude-dark p-8 mb-8">
+							<h3 className="text-xl font-semibold text-nude-dark mb-4">
+								📦 Prochaines étapes
+							</h3>
+							<ul className="space-y-3 text-gray-700">
+								<li className="flex items-start gap-2">
+									<span className="text-logo font-bold">1.</span>
+									<span>Un email de confirmation vous a été envoyé avec les détails de votre commande</span>
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="text-logo font-bold">2.</span>
+									<span>Votre commande sera préparée et expédiée dans les plus brefs délais</span>
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="text-logo font-bold">3.</span>
+									<span>Vous recevrez un email avec le numéro de suivi dès l&apos;expédition</span>
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="text-logo font-bold">4.</span>
+									<span>Vous pouvez suivre l&apos;état de votre commande dans votre espace client</span>
+								</li>
+							</ul>
+						</div>
+
+						<div className="flex flex-col sm:flex-row gap-4 justify-center">
+							<Link
+								href="/orders"
+								className="text-center rounded-2xl bg-nude-dark text-white py-3 px-8 text-lg hover:bg-logo transition-all duration-300"
+							>
+								Voir mes commandes
+							</Link>
+							<Link
+								href="/allProducts"
+								className="text-center rounded-2xl ring-1 ring-nude-dark text-nude-dark bg-nude-light py-3 px-8 text-lg hover:bg-nude-dark hover:text-nude-light transition-all duration-300"
+							>
+								Continuer mes achats
+							</Link>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// ===== CAS STRIPE (session invalide) =====
 	if (!sessionId || !orderData) {
 		return (
 			<div className="min-h-screen bg-beige-light flex items-center justify-center">

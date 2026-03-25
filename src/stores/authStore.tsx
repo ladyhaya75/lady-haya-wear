@@ -129,9 +129,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         if (cartResponse.ok) {
           const { cartItems } = await cartResponse.json();
-          useCartStore.getState().setCartItems(cartItems);
+          // Préserver les images locales si Sanity n'en retourne pas
+          const currentItems = useCartStore.getState().cartItems;
+          const mergedItems = cartItems.map((serverItem: any) => {
+            const localItem = currentItems.find((i) => i.id === serverItem.id);
+            return { ...serverItem, image: serverItem.image || localItem?.image || null };
+          });
+          useCartStore.getState().setCartItems(mergedItems);
           window.dispatchEvent(
-            new CustomEvent('cartSynced', { detail: { cartItems } })
+            new CustomEvent('cartSynced', { detail: { cartItems: mergedItems } })
           );
         }
       } catch (error) {
@@ -185,9 +191,15 @@ const hydrateContextsFromDB = async () => {
     const cartRes = await fetch('/api/cart/sync', { credentials: 'include' });
     if (cartRes.ok) {
       const { cartItems } = await cartRes.json();
-      useCartStore.getState().setCartItems(cartItems);
+      // Préserver les images locales si Sanity n'en retourne pas
+      const currentItems = useCartStore.getState().cartItems;
+      const mergedItems = cartItems.map((serverItem: any) => {
+        const localItem = currentItems.find((i: any) => i.id === serverItem.id);
+        return { ...serverItem, image: serverItem.image || localItem?.image || null };
+      });
+      useCartStore.getState().setCartItems(mergedItems);
       window.dispatchEvent(
-        new CustomEvent('cartSynced', { detail: { cartItems } })
+        new CustomEvent('cartSynced', { detail: { cartItems: mergedItems } })
       );
     }
   } catch (e) {
