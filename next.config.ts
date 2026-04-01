@@ -9,6 +9,11 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+	// ESLint 9 + @rushstack/eslint-patch : erreur "Failed to patch ESLint" connue avec `next lint` ;
+	// le build ne lance pas ESLint ici ; lance `npm run lint` en local (ou l’IDE).
+	eslint: {
+		ignoreDuringBuilds: true,
+	},
 	// Configuration pour les images
 	images: {
 		remotePatterns: [

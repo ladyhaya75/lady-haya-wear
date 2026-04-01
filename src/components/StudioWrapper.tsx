@@ -14,8 +14,9 @@ export default function StudioWrapper({ children }: StudioWrapperProps) {
 	const isCheckout = pathname.startsWith("/checkout");
 	const isDashboard = pathname.startsWith("/dashboard");
 	const isAdminLogin = pathname.startsWith("/admin-login");
+	const isComingSoon = pathname.startsWith("/coming-soon");
 
-	if (isStudio || isCheckout || isDashboard || isAdminLogin) {
+	if (isStudio || isCheckout || isDashboard || isAdminLogin || isComingSoon) {
 		return <>{children}</>;
 	}
 
