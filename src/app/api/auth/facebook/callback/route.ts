@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { sign } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -236,15 +237,19 @@ export async function GET(request: NextRequest) {
 				console.log("Utilisateur Facebook mis à jour:", dbUser.id);
 			}
 
-			// Créer un token de session avec l'ID de l'utilisateur en BDD
-			const sessionData = {
-				userId: dbUser.id,
-				email: dbUser.email,
-				name: user.name,
-				provider: "facebook",
-			};
-			const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString(
-				"base64"
+			// Créer un token de session signé avec l'ID de l'utilisateur en BDD
+			const jwtSecret = process.env.NEXTAUTH_SECRET;
+			if (!jwtSecret) throw new Error("NEXTAUTH_SECRET manquant");
+
+			const sessionToken = sign(
+				{
+					userId: dbUser.id,
+					email: dbUser.email,
+					name: user.name,
+					provider: "facebook",
+				},
+				jwtSecret,
+				{ expiresIn: "7d" }
 			);
 
 			// Rediriger vers l'accueil avec le cookie de session

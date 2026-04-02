@@ -29,16 +29,23 @@ export default function Footer() {
 						viewport={{ once: true, amount: 0.1 }}
 						transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
 					>
-						<div className="flex items-center gap-3 mb-4">
-							<Image
-								src="/assets/logo-haya.png"
-								alt="Logo Lady Haya"
-								width={48}
-								height={48}
-								className="w-12 h-12"
-							/>
-							<div className="text-2xl lg:text-3xl font-alex-brush font-semibold">
-								Lady Haya
+						<div className="flex flex-col items-start gap-1 mb-4">
+							<div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3">
+								<div className="flex items-center gap-3">
+									<Image
+										src="/assets/logo-haya.png"
+										alt="Logo Lady Haya Wear"
+										width={48}
+										height={48}
+										className="w-12 h-12"
+									/>
+									<div className="text-2xl lg:text-3xl font-alex-brush font-semibold">
+										Lady Haya Wear
+									</div>
+								</div>
+								<p className="text-xs tracking-widest text-nude-light/70 font-light lg:pl-1">
+									— LA MODESTIE SUBLIMÉE —
+								</p>
 							</div>
 						</div>
 						<p className="text-sm mb-4 leading-relaxed">

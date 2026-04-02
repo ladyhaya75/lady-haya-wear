@@ -10,17 +10,15 @@ export async function GET(request: NextRequest) {
 	try {
 		// Vérifier l'autorisation (optionnel : ajouter une clé secrète)
 		const authHeader = request.headers.get("authorization");
-		const expectedAuth = `Bearer ${process.env.CRON_SECRET || "ma-cle-secrete-lady-haya-2024-newsletter-cleanup-xyz789"}`;
-
-		console.log("🔐 Auth check - Header:", authHeader);
-		console.log("🔐 Auth check - Expected:", expectedAuth);
+		const cronSecret = process.env.CRON_SECRET;
+		if (!cronSecret) {
+			return NextResponse.json({ error: "CRON_SECRET non configuré" }, { status: 500 });
+		}
+		const expectedAuth = `Bearer ${cronSecret}`;
 
 		if (authHeader !== expectedAuth) {
-			console.log("❌ Authorization failed");
 			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 		}
-
-		console.log("✅ Authorization successful");
 
 		// Pour le test, on prend les commandes DELIVERED récentes (dernières 72h)
 		// En production, on utilisera exactement 48h

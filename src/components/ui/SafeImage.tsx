@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface SafeImageProps {
 	src: string | null | undefined;
@@ -35,11 +35,6 @@ export default function SafeImage({
 	protected: isProtected = false,
 }: SafeImageProps) {
 	const [imageError, setImageError] = useState(false);
-	const [isMounted, setIsMounted] = useState(false);
-
-	useEffect(() => {
-		setIsMounted(true);
-	}, []);
 
 	// Si pas de source, afficher le fallback
 	if (!src) {
@@ -59,25 +54,7 @@ export default function SafeImage({
 		);
 	}
 
-	// Pendant l'hydratation, afficher le fallback pour éviter les différences SSR/Client
-	if (!isMounted) {
-		return (
-			<div
-				className={`relative bg-gradient-to-br from-nude-light to-rose-light-2 flex items-center justify-center ${className}`}
-			>
-				{fill ? (
-					<>
-						<span className="text-4xl">🛍️</span>
-						<div className="absolute inset-0 bg-black/10 rounded-2xl" />
-					</>
-				) : (
-					<span className="text-2xl">🛍️</span>
-				)}
-			</div>
-		);
-	}
-
-	// Si erreur après le montage, afficher le fallback
+	// Si erreur de chargement, afficher le fallback
 	if (imageError) {
 		return (
 			<div

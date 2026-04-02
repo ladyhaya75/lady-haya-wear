@@ -1,8 +1,9 @@
 import { verify } from "jsonwebtoken";
 import { NextRequest } from "next/server";
 import { prisma } from "./prisma";
-const JWT_SECRET =
-	process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error("JWT_SECRET est manquant dans les variables d'environnement");
+const JWT_SECRET_DEFINED = JWT_SECRET as string;
 
 export interface AdminUser {
 	id: string;
@@ -22,7 +23,7 @@ export async function getAdminFromRequest(
 		}
 
 		// Vérifier le token
-		const decoded = verify(token, JWT_SECRET) as any;
+		const decoded = verify(token, JWT_SECRET_DEFINED) as any;
 
 		if (!decoded || !decoded.id) {
 			return null;

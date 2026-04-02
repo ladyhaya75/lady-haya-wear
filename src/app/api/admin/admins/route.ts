@@ -1,10 +1,17 @@
+import { getAdminFromRequest } from "@/lib/auth-utils";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET - Récupérer tous les admins
-export async function GET() {
+export async function GET(request: NextRequest) {
 	try {
+		// Vérification authentification admin
+		const admin = await getAdminFromRequest(request);
+		if (!admin) {
+			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+		}
+
 		const admins = await prisma.admin.findMany({
 			select: {
 				id: true,
@@ -31,6 +38,12 @@ export async function GET() {
 // POST - Créer un nouvel admin
 export async function POST(request: NextRequest) {
 	try {
+		// Vérification authentification admin
+		const currentAdmin = await getAdminFromRequest(request);
+		if (!currentAdmin) {
+			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+		}
+
 		const { email, password, name, role } = await request.json();
 
 		// Validation des champs

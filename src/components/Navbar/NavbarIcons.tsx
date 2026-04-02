@@ -29,7 +29,10 @@ export default function NavbarIcons() {
 	const favorites = useFavoritesStore((state) => state.favorites);
 	const getCartCount = useCartStore((state) => state.getCartCount);
 	const [mounted, setMounted] = useState(false);
-	const { user, loading, logout } = useAuthStore();
+	// Sélecteurs ciblés pour éviter les re-renders sur tout changement du store
+	const user = useAuthStore((state) => state.user);
+	const loading = useAuthStore((state) => state.loading);
+	const logout = useAuthStore((state) => state.logout);
 	const profileModalRef = useRef<HTMLDivElement>(null);
 
 	const [isProfileOpen, setIsProfileOpen] = useState(false);

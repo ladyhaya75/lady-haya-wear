@@ -2,8 +2,10 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { sign, verify } from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
-const JWT_SECRET =
-	process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error("JWT_SECRET est manquant dans les variables d'environnement");
+// JWT_SECRET est garanti non-undefined après le throw ci-dessus
+const JWT_SECRET_DEFINED = JWT_SECRET as string;
 
 // POST - Connexion admin
 export async function POST(request: NextRequest) {
@@ -54,7 +56,7 @@ export async function POST(request: NextRequest) {
 				name: admin.name,
 				role: admin.role,
 			},
-			JWT_SECRET,
+			JWT_SECRET_DEFINED,
 			{ expiresIn: "24h" }
 		);
 
@@ -76,7 +78,7 @@ export async function POST(request: NextRequest) {
 		response.cookies.set("admin-token", token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
-			sameSite: "lax", // Changé de "strict" à "lax" pour plus de compatibilité
+			sameSite: "strict",
 			maxAge: 24 * 60 * 60, // 24 heures
 		});
 
@@ -100,7 +102,7 @@ export async function GET(request: NextRequest) {
 		}
 
 		// Vérifier le token
-		const decoded = verify(token, JWT_SECRET) as any;
+		const decoded = verify(token, JWT_SECRET_DEFINED) as any;
 
 		if (!decoded || !decoded.id) {
 			return NextResponse.json({ error: "Token invalide" }, { status: 401 });

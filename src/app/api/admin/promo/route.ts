@@ -1,9 +1,16 @@
+import { getAdminFromRequest } from "@/lib/auth-utils";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET - Récupérer tous les codes promo
-export async function GET() {
+export async function GET(request: NextRequest) {
 	try {
+		// Vérification authentification admin
+		const admin = await getAdminFromRequest(request);
+		if (!admin) {
+			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+		}
+
 		const promoCodes = await prisma.promoCode.findMany({
 			orderBy: {
 				createdAt: "desc",
@@ -37,6 +44,12 @@ export async function GET() {
 // POST - Créer un nouveau code promo
 export async function POST(request: NextRequest) {
 	try {
+		// Vérification authentification admin
+		const admin = await getAdminFromRequest(request);
+		if (!admin) {
+			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+		}
+
 		const body = await request.json();
 		const { code, discount, type, validFrom, validTo, maxUsage } = body;
 

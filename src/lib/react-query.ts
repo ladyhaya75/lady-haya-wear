@@ -17,8 +17,8 @@ export const queryClient = new QueryClient({
       // Temps que les données restent en cache
       gcTime: 10 * 60 * 1000, // 10 minutes (anciennement cacheTime)
       
-      // Refetch automatique quand la fenêtre reprend le focus
-      refetchOnWindowFocus: true,
+      // Refetch automatique quand la fenêtre reprend le focus (désactivé : les données produits ne changent pas au changement d'onglet)
+      refetchOnWindowFocus: false,
       
       // Refetch automatique à la reconnexion
       refetchOnReconnect: true,

@@ -1,9 +1,16 @@
+import { getAdminFromRequest } from "@/lib/auth-utils";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET - Récupérer tous les reviews pour l'admin (avec filtres)
 export async function GET(request: NextRequest) {
 	try {
+		// Vérification authentification admin
+		const admin = await getAdminFromRequest(request);
+		if (!admin) {
+			return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+		}
+
 		const { searchParams } = new URL(request.url);
 		const status = searchParams.get("status");
 		const submitted = searchParams.get("submitted");

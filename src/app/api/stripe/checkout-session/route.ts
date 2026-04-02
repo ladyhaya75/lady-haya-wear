@@ -39,6 +39,22 @@ export async function POST(req: NextRequest) {
 
 		const { user } = await authRes.json();
 
+		// Validation basique : prix minimum 0.50€, total cohérent
+		for (const item of cartItems) {
+			if (!item.price || item.price < 0.5) {
+				return NextResponse.json(
+					{ error: "Prix invalide détecté" },
+					{ status: 400 }
+				);
+			}
+			if (!item.quantity || item.quantity < 1 || item.quantity > 100) {
+				return NextResponse.json(
+					{ error: "Quantité invalide" },
+					{ status: 400 }
+				);
+			}
+		}
+
 	// Créer les line items pour Stripe
 	const lineItems = cartItems.map((item: any) => {
 		// Stripe n'accepte que des URLs HTTPS absolues

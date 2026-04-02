@@ -72,17 +72,11 @@ export function middleware(request: NextRequest) {
 	if (isAdminRoute) {
 		const hasAdminToken = request.cookies.has("admin-token");
 
-		console.log("🔍 Debug middleware - Route admin:", pathname);
-		console.log("🔍 Admin token présent:", hasAdminToken);
-
 		if (!hasAdminToken) {
-			console.log("❌ Pas de token admin, redirection vers admin-login");
 			const loginUrl = new URL("/admin-login", request.url);
 			loginUrl.searchParams.set("callbackUrl", pathname);
 			return NextResponse.redirect(loginUrl);
 		}
-
-		console.log("✅ Token admin trouvé, accès autorisé");
 	}
 
 	return securityResponse;

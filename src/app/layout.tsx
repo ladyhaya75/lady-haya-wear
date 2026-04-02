@@ -12,8 +12,40 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-	title: "Lady Haya Wear",
-	description: "Vêtements pour femmes musulmanes",
+	metadataBase: new URL("https://ladyhaya-wear.fr"),
+	title: {
+		default: "Lady Haya Wear — La Modestie Sublimée",
+		template: "%s | Lady Haya Wear",
+	},
+	description: "Découvrez Lady Haya Wear, votre boutique de vêtements élégants pour femmes musulmanes. Abayas, robes et tenues modestes alliant style et confort.",
+	keywords: ["vêtements femmes musulmanes", "abaya", "hijab", "mode modeste", "lady haya wear", "tenue islamique"],
+	authors: [{ name: "Lady Haya Wear" }],
+	robots: {
+		index: true,
+		follow: true,
+	},
+	openGraph: {
+		type: "website",
+		locale: "fr_FR",
+		url: "https://ladyhaya-wear.fr",
+		siteName: "Lady Haya Wear",
+		title: "Lady Haya Wear — La Modestie Sublimée",
+		description: "Découvrez Lady Haya Wear, votre boutique de vêtements élégants pour femmes musulmanes. Abayas, robes et tenues modestes alliant style et confort.",
+		images: [
+			{
+				url: "/assets/logo-haya.png",
+				width: 512,
+				height: 512,
+				alt: "Lady Haya Wear",
+			},
+		],
+	},
+	twitter: {
+		card: "summary",
+		title: "Lady Haya Wear — La Modestie Sublimée",
+		description: "Découvrez Lady Haya Wear, votre boutique de vêtements élégants pour femmes musulmanes.",
+		images: ["/assets/logo-haya.png"],
+	},
 	icons: {
 		icon: "/icon.png",
 		apple: "/apple-touch-icon.png",
@@ -22,7 +54,7 @@ export const metadata: Metadata = {
 	appleWebApp: {
 		capable: true,
 		statusBarStyle: "black-translucent",
-		title: "Lady Haya",
+		title: "Lady Haya Wear",
 	},
 };
 

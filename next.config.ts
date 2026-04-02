@@ -31,10 +31,18 @@ const nextConfig: NextConfig = {
 			},
 		],
 		// Configuration pour améliorer la fiabilité des images
-		formats: ["image/webp", "image/avif"],
-		minimumCacheTTL: 60,
+		formats: ["image/avif", "image/webp"],
+		minimumCacheTTL: 86400,
 		dangerouslyAllowSVG: true,
 		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+	},
+	// Navigations client instantanées pendant 30s (Next.js 15+ met le cache dynamique à 0 par défaut)
+	experimental: {
+		staleTimes: {
+			dynamic: 30,
+		},
+		// Tree-shaking des gros packages d'icônes et d'animations
+		optimizePackageImports: ["lucide-react", "framer-motion", "@radix-ui/react-icons", "react-icons"],
 	},
 	// Configuration Turbopack pour spécifier le répertoire racine
 	turbopack: {

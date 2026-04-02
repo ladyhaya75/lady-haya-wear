@@ -126,7 +126,7 @@ export default function Navbar() {
 								whileHover={{ scale: 1.05 }}
 								transition={{ duration: 0.5 }}
 							>
-								Lady Haya
+								Lady Haya Wear
 							</motion.div>
 						</Link>
 					</motion.div>
@@ -183,7 +183,7 @@ export default function Navbar() {
 								}}
 								whileHover={{ scale: 1.05 }}
 							>
-								Lady Haya
+								Lady Haya Wear
 							</motion.div>
 						</Link>
 					</motion.div>

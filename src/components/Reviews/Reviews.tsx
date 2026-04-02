@@ -222,7 +222,7 @@ export default function Reviews() {
 										transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
 									>
 										<p className="text-logo font-balqis text-xl font-semibold">
-											{reviews[currentReview].name}
+											{reviews[currentReview].name.split(" ")[0]}
 										</p>
 										<p className="text-nude-dark text-sm mt-1">
 											Cliente vérifiée

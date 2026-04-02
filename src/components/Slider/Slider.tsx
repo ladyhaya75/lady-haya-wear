@@ -116,6 +116,14 @@ export default function Slider({ featuredCategories }: SliderProps) {
 							>
 								Lady Haya Wear
 							</motion.h1>
+							<motion.p
+								className="text-xs lg:text-sm tracking-widest text-logo text-center font-light -mt-4"
+								initial={{ y: 20, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ duration: 0.8, delay: 0.55 }}
+							>
+								— LA MODESTIE SUBLIMÉE —
+							</motion.p>
 							<motion.div
 								initial={{ scale: 0, opacity: 0 }}
 								animate={{ scale: 1, opacity: 1 }}
@@ -157,6 +165,7 @@ export default function Slider({ featuredCategories }: SliderProps) {
 									fill
 									sizes="100%"
 									className="object-cover"
+									priority={index === 0}
 								/>
 							</motion.div>
 							{/* DESCRIPTION OVERLAY - TOP */}
