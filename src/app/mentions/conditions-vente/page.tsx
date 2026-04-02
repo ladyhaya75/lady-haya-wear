@@ -29,7 +29,7 @@ export default function ConditionsVentePage() {
 								<strong>Adresse :</strong> 123 Rue de la Mode, 75001 Paris,
 								France
 								<br />
-								<strong>SIRET :</strong> 123 456 789 00012
+								<strong>SIRET :</strong> 102 769 643 000 10
 								<br />
 								<strong>Email :</strong> contact@ladyhaya-wear.fr
 							</p>

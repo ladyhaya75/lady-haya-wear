@@ -255,7 +255,7 @@ L'équipe Lady Haya Wear`,
 		return templates[type as keyof typeof templates];
 	};
 
-	const useTemplate = (type: "general" | "promo" | "new_product") => {
+	const applyTemplate = (type: "general" | "promo" | "new_product") => {
 		const template = getTemplateContent(type);
 		setNewCampaign((prev) => ({
 			...prev,
@@ -419,19 +419,19 @@ L'équipe Lady Haya Wear`,
 							</h3>
 							<div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
 								<button
-									onClick={() => useTemplate("promo")}
+									onClick={() => applyTemplate("promo")}
 									className="px-3 sm:px-4 py-2 border border-rose-light rounded-lg hover:bg-rose-light transition-colors cursor-pointer text-sm sm:text-base w-full sm:w-auto"
 								>
 									🎉 Promotion
 								</button>
 								<button
-									onClick={() => useTemplate("new_product")}
+									onClick={() => applyTemplate("new_product")}
 									className="px-3 sm:px-4 py-2 border border-rose-light rounded-lg hover:bg-rose-light transition-colors cursor-pointer text-sm sm:text-base w-full sm:w-auto"
 								>
 									✨ Nouveau produit
 								</button>
 								<button
-									onClick={() => useTemplate("general")}
+									onClick={() => applyTemplate("general")}
 									className="px-3 sm:px-4 py-2 border border-rose-light rounded-lg hover:bg-rose-light transition-colors cursor-pointer text-sm sm:text-base w-full sm:w-auto"
 								>
 									📧 Général

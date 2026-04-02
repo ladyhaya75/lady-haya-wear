@@ -54,7 +54,7 @@ export default function Footer() {
 							accessoires qui allient tradition et modernité.
 						</p>
 						<div className="text-xs space-y-1">
-							<p>SIRET : 123 456 789 00012</p>
+							<p>SIRET : 102 769 643 000 10</p>
 							<p>RCS : Paris B 123 456 789</p>
 						</div>
 					</motion.div>

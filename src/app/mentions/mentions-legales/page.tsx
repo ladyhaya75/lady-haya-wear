@@ -29,17 +29,17 @@ export default function MentionsLegalesPage() {
 								<strong>Capital social :</strong> 50 000 €
 							</p>
 							<p>
-								<strong>SIRET :</strong> 123 456 789 00012
+								<strong>SIRET :</strong> 102 769 643 000 10
 							</p>
 							<p>
 								<strong>RCS :</strong> Paris B 123 456 789
 							</p>
 							<p>
-								<strong>Siège social :</strong> 123 Rue de la Mode, 75001 Paris,
-								France
+								<strong>Siège social :</strong> 12 rue de l&apos;Ermitage, 93600
+								Aulnay-sous-Bois, France
 							</p>
 							<p>
-								<strong>Téléphone :</strong> +33 1 23 45 67 89
+								<strong>Téléphone :</strong> 06 32 51 61 53
 							</p>
 							<p>
 								<strong>Email :</strong> contact@ladyhaya-wear.fr
