@@ -32,6 +32,7 @@ const nextConfig: NextConfig = {
 		],
 		// Configuration pour améliorer la fiabilité des images
 		formats: ["image/avif", "image/webp"],
+		qualities: [75, 85, 90, 95],
 		minimumCacheTTL: 86400,
 		dangerouslyAllowSVG: true,
 		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
